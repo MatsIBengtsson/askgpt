@@ -1,0 +1,58 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>io.nerdythings.askgpt</id>
+
+    <name>Ask GPT</name>
+
+    <vendor email="nerdythingschannel@gmail.com" url="https://nerdythings.io">nerdythings.io</vendor>
+
+    <description><![CDATA[
+    Plugin that can ask ChatGPT AI to do anything
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <!--    <depends>com.intellij.modules.java</depends>-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService
+                serviceImplementation="io.nerdythings.preferences.AppSettingsState"/>
+    </extensions>
+
+    <actions>
+        <action
+                id="org.intellij.sdk.action.PopupDialogAction"
+                class="io.nerdythings.action.PluginSettingsAction"
+                text="AskGPT Settings"
+                description="Set required settings for the plugin.">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+        <action id="io.nerdythings.action.AskGptAction" class="io.nerdythings.action.AskGptAction"
+                text="Ask GPT Model" description="Create a custom inplace ask">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+        <action id="io.nerdythings.action.CreateTestAction" class="io.nerdythings.action.CreateTestAction"
+                text="Generate Test with AI" description="Generates tests for a whole class">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+        <action id="io.nerdythings.action.FindBugsAction" class="io.nerdythings.action.FindBugsAction"
+                text="Analyse Code with AI" description="Analyses class and gives suggestions">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+        <action id="io.nerdythings.action.GenerateDocsAction" class="io.nerdythings.action.GenerateDocsAction"
+                text="Generate Documentation with AI" description="Generates docs for the class">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+        <action id="io.nerdythings.action.GenerateDocsAction1"
+                class="io.nerdythings.action.GenerateDocsAction"
+                text="My Action"
+                description="Does something cool">
+            <add-to-group group-id="EditorPopupMenu"
+                          anchor="last"
+            />
+        </action>
+
+    </actions>
+</idea-plugin>
