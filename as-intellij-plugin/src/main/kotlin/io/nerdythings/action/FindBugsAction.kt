@@ -38,7 +38,8 @@ class FindBugsAction : AnAction() {
 
         ActionGptRequestHelper.makeGPTRequest(
             project,
-            AppSettingsState.instance.checkBugsQuestion + "\nCode:\n" + actionRequest.code
+            AppSettingsState.instance.checkBugsQuestion + "\nCode:\n" + actionRequest.code,
+            "GPT is looking in your code..."
         ) {
             IdeaUtil.replaceFileContent(project, editor, it)
         }

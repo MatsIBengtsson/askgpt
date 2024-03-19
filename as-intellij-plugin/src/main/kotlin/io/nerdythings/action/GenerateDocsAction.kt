@@ -12,13 +12,6 @@ import org.jetbrains.annotations.NotNull
 
 class GenerateDocsAction : AnAction() {
 
-    /**
-     * Gives the user feedback when the dynamic action menu is chosen.
-     * Pops a simple message dialog. See the psi_demo plugin for an
-     * example of how to use [AnActionEvent] to access data.
-     *
-     * @param event Event received when the associated menu item is chosen.
-     */
     override fun actionPerformed(@NotNull event: AnActionEvent) {
         val project = event.project
         val editor  = event.getData(CommonDataKeys.EDITOR)
@@ -45,7 +38,8 @@ class GenerateDocsAction : AnAction() {
 
         ActionGptRequestHelper.makeGPTRequest(
             project,
-            AppSettingsState.instance.writeDocsQuestion + "\nCode:\n" + actionRequest.code
+            AppSettingsState.instance.writeDocsQuestion + "\nCode:\n" + actionRequest.code,
+            "GPT is documenting in your code...",
         ) {
             IdeaUtil.replaceFileContent(project, editor, it)
         }

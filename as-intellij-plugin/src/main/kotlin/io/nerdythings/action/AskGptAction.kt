@@ -16,7 +16,7 @@ class AskGptAction : AnAction() {
 
     override fun actionPerformed(@NotNull event: AnActionEvent) {
         val project = event.project
-        val editor  = event.getData(CommonDataKeys.EDITOR)
+        val editor = event.getData(CommonDataKeys.EDITOR)
         if (project == null || editor == null) {
             Messages.showMessageDialog(
                 project,
@@ -36,9 +36,17 @@ class AskGptAction : AnAction() {
                 questionText.append(parsedEvent.code)
             }
             // OK button was pressed
-            ActionGptRequestHelper.makeGPTRequest(project, questionText.toString()) {
-                val text =  it.replace(".", ".\n")
-                IdeaUtil.insertIntoSameFile(project, editor, "$SEPARATOR$text$SEPARATOR")
+            ActionGptRequestHelper.makeGPTRequest(project, questionText.toString(), "Asking GPT...") {
+                val text = it.replace(".", ".\n")
+                IdeaUtil.insertIntoSameFile(
+                    project = project,
+                    editor = editor,
+                    text = "$COMMENT_START" +
+                            "$SEPARATOR" +
+                            "$text" +
+                            "$SEPARATOR" +
+                            "$COMMENT_END",
+                )
             }
         } else {
             // Dialog was cancelled or closed
@@ -52,7 +60,10 @@ class AskGptAction : AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
+
     private companion object {
         private const val SEPARATOR = "\n\n ------------------------------------------------------------------ \n\n"
+        private const val COMMENT_START = "/**"
+        private const val COMMENT_END = "*/"
     }
 }

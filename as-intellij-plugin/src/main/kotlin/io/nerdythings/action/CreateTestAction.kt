@@ -27,12 +27,13 @@ class CreateTestAction : AnAction() {
         }
         val path = actionRequest.localFilePath
         val text = AppSettingsState.instance.createTestQuestion + "\nCode:\n" + actionRequest.code
-        ActionGptRequestHelper.makeGPTRequest(project, text) { response ->
+        ActionGptRequestHelper.makeGPTRequest(
+            project, text, "GPT is creating tests for your code..."
+        ) { response ->
             val code = ActionGptRequestHelper.cutCodeFromResponse(response)
             val dot = path.lastIndexOf('.')
             val newPath = path.substring(0, dot) + "Test" + path.substring(dot, path.length)
-            val className = "class " + File(newPath).nameWithoutExtension
-            IdeaUtil.writeAndOpenFile(project, newPath, className + code)
+            IdeaUtil.writeAndOpenFile(project, newPath, code)
         }
     }
 

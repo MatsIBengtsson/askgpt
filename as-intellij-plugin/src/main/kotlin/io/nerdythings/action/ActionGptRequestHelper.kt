@@ -11,8 +11,13 @@ import kotlinx.coroutines.runBlocking
 
 object ActionGptRequestHelper {
 
-    fun makeGPTRequest(project: Project, question: String, result: (String) -> Unit) {
-        ProgressManager.getInstance().run(object : Task.Modal(project, "Running Task", true) {
+    fun makeGPTRequest(
+        project: Project,
+        question: String,
+        progressText: String = "Running Task",
+        result: (String) -> Unit
+    ) {
+        ProgressManager.getInstance().run(object : Task.Modal(project, progressText, true) {
             override fun run(indicator: ProgressIndicator) {
                 indicator.isIndeterminate = true
                 runBlocking {
