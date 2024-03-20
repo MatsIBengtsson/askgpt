@@ -41,11 +41,11 @@ class AskGptAction : AnAction() {
                 IdeaUtil.insertIntoSameFile(
                     project = project,
                     editor = editor,
-                    text = "$COMMENT_START" +
-                            "$SEPARATOR" +
-                            "$text" +
-                            "$SEPARATOR" +
-                            "$COMMENT_END",
+                    text = COMMENT_START +
+                            SEPARATOR +
+                            text +
+                            SEPARATOR +
+                            COMMENT_END,
                 )
             }
         } else {
