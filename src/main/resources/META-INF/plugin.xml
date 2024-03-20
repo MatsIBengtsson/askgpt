@@ -7,14 +7,16 @@
     <vendor email="nerdythingschannel@gmail.com" url="https://nerdythings.io">nerdythings.io</vendor>
 
     <description><![CDATA[
-    Plugin that can ask ChatGPT AI to do anything
+ChatGPT Assistant for IntelliJ IDEA
+The ChatGPT Assistant plugin for IntelliJ IDEA is a groundbreaking addition to the developer's toolkit, seamlessly integrating the capabilities of ChatGPT into the coding environment. This plugin is designed to boost productivity, creativity, and efficiency, offering an array of features that simplify and enhance the development process.
+Key Features:
+Custom Asks: Query ChatGPT directly to generate custom code snippets, algorithms, or tackle programming challenges right within your IDE.
+Write Tests: Automatically generate test cases for your code. Simply specify the target, and let ChatGPT Assistant create comprehensive tests to ensure reliability.
+Find Bugs: Describe your bug to ChatGPT Assistant, and it will help identify potential flaws in your code, suggest debugging steps, or offer direct solutions.
+Create Docs: Generate documentation effortlessly. ChatGPT Assistant can document your functions, classes, and modules, making your codebase easier to navigate and maintain.
     ]]></description>
 
-    <!-- Product and plugin compatibility requirements.
-         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
-    <depends>org.jetbrains.kotlin</depends>
-    <!--    <depends>com.intellij.modules.java</depends>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService
