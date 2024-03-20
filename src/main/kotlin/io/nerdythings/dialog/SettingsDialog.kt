@@ -2,10 +2,9 @@ package io.nerdythings.dialog
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.util.ui.JBUI
 import io.nerdythings.preferences.AppSettingsState
-import java.awt.Dimension
-import java.awt.GridLayout
-import java.awt.Toolkit
+import java.awt.*
 import javax.swing.*
 import javax.swing.event.DocumentListener
 
@@ -21,10 +20,10 @@ class SettingsDialog : DialogWrapper(true) {
         contentPane = JPanel().apply {
             setLayout(GridLayout(5, 1))
 
-            addLabeledTextField(this, "ChatGPT token", AppSettingsState.instance.gptToken.orEmpty()) {
+            addLabeledTextField(this, "ChatGPT token", AppSettingsState.instance.gptToken.orEmpty(), textRows = 1) {
                 AppSettingsState.instance.gptToken = it
             }
-            addLabeledTextField(this, "ChatGPT model", AppSettingsState.instance.gptModel) {
+            addLabeledTextField(this, "ChatGPT model", AppSettingsState.instance.gptModel, textRows = 1) {
                 AppSettingsState.instance.gptModel = it
             }
             addLabeledTextField(this, "ChatGpt Test Question", AppSettingsState.instance.createTestQuestion) {
@@ -45,17 +44,16 @@ class SettingsDialog : DialogWrapper(true) {
         parentPanel: JPanel,
         labelText: String,
         textFieldText: String,
+        textRows: Int = 6,
         onChange: (String) -> Unit
     ) {
-        val screenSize = Toolkit.getDefaultToolkit().screenSize
-        val halfScreenWidth = screenSize.width / 2
-
         val panel = JPanel().apply {
-            setLayout(GridLayout(6, 20))
+            setLayout(GridLayout(textRows + 1, 1))
         }
         val label = JLabel(labelText)
 
-        val textArea = JTextArea(5, 20)
+        val textArea = JTextArea(textRows, 100)
+        textArea.margin = JBUI.insets(10)
         textArea.text = textFieldText
         textArea.lineWrap = true
         textArea.wrapStyleWord = true
@@ -77,13 +75,11 @@ class SettingsDialog : DialogWrapper(true) {
         })
 
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        val preferredHeight = 150
-        panel.preferredSize = Dimension(halfScreenWidth, preferredHeight)
-        panel.add(Box.createVerticalStrut(10))
+        panel.add(Box.createVerticalStrut(5))
         panel.add(label)
-        panel.add(Box.createVerticalStrut(10))
+        panel.add(Box.createVerticalStrut(5))
         panel.add(scrollPane)
-        panel.add(Box.createVerticalStrut(50))
+        panel.add(Box.createVerticalStrut(20))
         parentPanel.add(panel)
     }
 }
