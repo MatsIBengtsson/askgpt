@@ -1,13 +1,17 @@
 package io.nerdythings.utils
 
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.CaretModel
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiManager
 import com.intellij.psi.codeStyle.CodeStyleManager
+import io.nerdythings.action.NerdyActionGroup
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -15,6 +19,13 @@ import java.io.IOException
 
 
 object IdeaUtil {
+
+    fun setActionIcon(event: AnActionEvent) {
+        val editor = event.getData(CommonDataKeys.EDITOR);
+        event.presentation.setEnabled(editor != null);
+        val icon = IconLoader.getIcon("/META-INF/pluginIcon16.png", NerdyActionGroup::class.java)
+        event.presentation.setIcon(icon)
+    }
 
     fun writeAndOpenFile(project: Project, path: String, classText: String) {
         writeAndOpenFile(project, File(path), classText)

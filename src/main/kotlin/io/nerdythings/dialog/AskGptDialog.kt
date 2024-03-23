@@ -10,7 +10,7 @@ import javax.swing.*
 import javax.swing.event.DocumentListener
 
 
-class AskGptDialog : DialogWrapper(true) {
+class AskGptDialog() : DialogWrapper(true) {
 
     private val contentPane: JPanel by lazy {
         JPanel()
@@ -48,12 +48,6 @@ class AskGptDialog : DialogWrapper(true) {
             }
         })
 
-        val checkBox = JCheckBox("Send file content with a question")
-        checkBox.isSelected = settings.sendCodeWithGptAsk
-        checkBox.addItemListener { e ->
-            settings.sendCodeWithGptAsk = e.stateChange == ItemEvent.SELECTED
-        }
-
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
 
         panel.add(Box.createVerticalStrut(20))
@@ -61,10 +55,56 @@ class AskGptDialog : DialogWrapper(true) {
         panel.add(Box.createVerticalStrut(10))
         panel.add(scrollPane)
         panel.add(Box.createVerticalStrut(10))
-        panel.add(checkBox)
+        addRadioGroup(panel)
         panel.add(Box.createVerticalStrut(50))
+
         contentPane.add(panel)
         return contentPane
+    }
+
+    private fun addRadioGroup(panel: JPanel) {
+        val settings = AppSettingsState.instance
+
+        val radioButton1 = JRadioButton(
+            "Send just the question",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.DONT_SEND,
+        )
+
+        val radioButton2 = JRadioButton(
+            "Send full code of the file",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_A_FILE,
+        )
+
+        val radioButton3 = JRadioButton(
+            "Send selected text only (if selected)",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY,
+        )
+
+        radioButton1.addItemListener { e ->
+            if (e.stateChange == ItemEvent.SELECTED) {
+                settings.setShouldSendCode(AppSettingsState.SendCodeMethod.DONT_SEND)
+            }
+        }
+        radioButton2.addItemListener { e ->
+            if (e.stateChange == ItemEvent.SELECTED) {
+                settings.setShouldSendCode(AppSettingsState.SendCodeMethod.SEND_A_FILE)
+            }
+        }
+        radioButton3.addItemListener { e ->
+            if (e.stateChange == ItemEvent.SELECTED) {
+                settings.setShouldSendCode(AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY)
+            }
+        }
+
+        val group = ButtonGroup()
+
+        group.add(radioButton1)
+        group.add(radioButton2)
+        group.add(radioButton3)
+
+        panel.add(radioButton1)
+        panel.add(radioButton2)
+        panel.add(radioButton3)
     }
 
 }

@@ -1,16 +1,16 @@
 package io.nerdythings.action
 
+import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import io.nerdythings.dialog.SettingsDialog
 import io.nerdythings.utils.IdeaUtil
 import org.jetbrains.annotations.NotNull
 
-class PluginSettingsAction : AnAction() {
+class OpenNerdyThingsAction : AnAction() {
 
     override fun actionPerformed(@NotNull event: AnActionEvent) {
-        SettingsDialog().show()
+        BrowserUtil.open("https://youtube.com/@Nerdy.Things?si=ePGW7vya2NR5Ugei")
     }
 
     override fun update(e: AnActionEvent) {

@@ -26,14 +26,21 @@ class AskGptAction : AnAction() {
             )
             return
         }
+        val selectionModel = editor.selectionModel
+        val selectedText = selectionModel.selectedText ?: ""
         val dialog = AskGptDialog()
         dialog.show()
         if (dialog.exitCode == DialogWrapper.OK_EXIT_CODE) {
             val questionText = StringBuilder(AppSettingsState.instance.gptAsk)
-            if (AppSettingsState.instance.sendCodeWithGptAsk) {
+
+            if (AppSettingsState.instance.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_A_FILE) {
                 questionText.append("\nCode:\n")
                 val parsedEvent = ActionHelper.parseEvent(event)
                 questionText.append(parsedEvent.code)
+            } else if (
+                AppSettingsState.instance.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY
+            ) {
+                questionText.append("\nCode:\n$selectedText")
             }
             // OK button was pressed
             ActionGptRequestHelper.makeGPTRequest(project, questionText.toString(), "Asking GPT...") {
@@ -54,6 +61,7 @@ class AskGptAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
+        IdeaUtil.setActionIcon(e)
         e.presentation.isEnabledAndVisible = e.project != null
     }
 

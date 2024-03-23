@@ -7,11 +7,11 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 @State(name = "io.nerdythings.preferences.AppSettingsState", storages = [Storage("NerdyAskAiSettingsPlugin.xml")])
 internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
 
-    var gptToken: String?= null
-    var gptModel: String  = "gpt-4"
-    var gptAsk: String  = "What is the purpose of humankind?"
-    var sendCodeWithGptAsk: Boolean  = false
-    var createTestQuestion: String =  "Could you be so kind and create tests for this file? " +
+    var gptToken: String? = null
+    var gptModel: String = "gpt-4"
+    var gptAsk: String = "What is the purpose of humankind?"
+    private var sendCodeWithGptAskType: Int = SendCodeMethod.DONT_SEND.ordinal
+    var createTestQuestion: String = "Could you be so kind and create tests for this file? " +
             "Please, make sure that coverage is at least 80% and tests have success and failure scenario. " +
             "Also, your answer should have only code .  " +
             "No intro our outro words and don't cut the code in the response. It should be fully written. " +
@@ -30,12 +30,28 @@ internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
             "No intro our outro words and don't cut the code in the response. It should be fully written. " +
             " Thank you!"
 
+    fun shouldSendCode(): SendCodeMethod = try {
+        SendCodeMethod.entries[sendCodeWithGptAskType]
+    } catch (s: Exception) {
+        SendCodeMethod.DONT_SEND
+    }
+
+    fun setShouldSendCode(method: SendCodeMethod) {
+        sendCodeWithGptAskType = method.ordinal
+    }
+
     override fun getState(): AppSettingsState {
         return this
     }
 
     override fun loadState(state: AppSettingsState) {
         XmlSerializerUtil.copyBean(state, this)
+    }
+
+    enum class SendCodeMethod {
+        DONT_SEND,
+        SEND_A_FILE,
+        SEND_SELECTED_ONLY,
     }
 
     companion object {

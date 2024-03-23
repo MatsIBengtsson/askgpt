@@ -48,13 +48,6 @@ The plugin then communicates with ChatGPT and provides you with actionable solut
     </extensions>
 
     <actions>
-        <action
-                id="org.intellij.sdk.action.PopupDialogAction"
-                class="io.nerdythings.action.PluginSettingsAction"
-                text="AskGPT Settings"
-                description="Set required settings for the plugin.">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
         <action id="io.nerdythings.action.AskGptAction" class="io.nerdythings.action.AskGptAction"
                 text="Ask GPT Model" description="Create a custom inplace ask">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
@@ -71,14 +64,27 @@ The plugin then communicates with ChatGPT and provides you with actionable solut
                 text="Generate Documentation with AI" description="Generates docs for the class">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
-        <action id="io.nerdythings.action.GenerateDocsAction1"
-                class="io.nerdythings.action.GenerateDocsAction"
-                text="My Action"
-                description="Does something cool">
-            <add-to-group group-id="EditorPopupMenu"
-                          anchor="last"
-            />
-        </action>
+        <!-- Define a new group that includes your actions -->
+        <group
+                id="AskGPTToolMenu"
+                text="AskGPT"
+                description="AskGPT details"
+                popup="true"
+                class="io.nerdythings.action.NerdyActionGroup">
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ToolsMenu"/>
 
+            <action
+                    id="org.intellij.sdk.action.PopupDialogAction"
+                    class="io.nerdythings.action.PluginSettingsAction"
+                    text="AskGPT Settings"
+                    description="Set required settings for the plugin.">
+            </action>
+            <action
+                    id="org.intellij.sdk.action.OpenNerdyThingsAction"
+                    class="io.nerdythings.action.OpenNerdyThingsAction"
+                    text="About AskGPT"
+                    description="Set required settings for the plugin.">
+            </action>
+        </group>
     </actions>
 </idea-plugin>

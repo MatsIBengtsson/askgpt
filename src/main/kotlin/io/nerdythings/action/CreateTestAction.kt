@@ -38,6 +38,7 @@ class CreateTestAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
+        IdeaUtil.setActionIcon(e)
         e.presentation.isEnabledAndVisible = e.project != null
     }
 
