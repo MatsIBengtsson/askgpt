@@ -1,8 +1,10 @@
 # ChatGPT Assistant for IntelliJ IDEA
 
-![Screenshot1](/images/image1.png)
+![Screenshot1](/images/animation.webp)
 
-![Screenshot2](/images/image2.png)
+![Screenshot2](/images/image1.png)
+
+![Screenshot3](/images/image2.png)
 
 This plugin  makes ChatGPT request for you and paste the answers directly into the code.
 No needs to copy code to the browser and back, just ask GPT from the IDE and see the answer in a moment.

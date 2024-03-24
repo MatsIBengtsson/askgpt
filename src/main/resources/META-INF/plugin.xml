@@ -8,6 +8,10 @@
 
     <description><![CDATA[
 <h1>ChatGPT Assistant for IntelliJ IDEA</h1>
+
+<p>
+<img src="https://github.com/Nerdy-Things/askgpt/blob/master/images/animation.webp?raw=true" />
+</p>
 <p>
     This plugin  makes ChatGPT request for you and paste the answers directly into the code.
     No needs to copy code to the browser and back, just ask GPT from the IDE and see the answer in a moment.

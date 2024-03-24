@@ -39,7 +39,7 @@ class GenerateDocsAction : AnAction() {
         ActionGptRequestHelper.makeGPTRequest(
             project,
             AppSettingsState.instance.writeDocsQuestion + "\nCode:\n" + actionRequest.code,
-            "GPT is documenting in your code...",
+            "GPT is documenting your code...",
         ) {
             IdeaUtil.replaceFileContent(project, editor, it)
         }
