@@ -2,8 +2,6 @@
 
 ![Screenshot1](/images/animation.webp)
 
-![Screenshot2](/images/image1.png)
-
 ![Screenshot3](/images/image2.png)
 
 This plugin  makes ChatGPT request for you and paste the answers directly into the code.
