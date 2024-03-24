@@ -26,7 +26,7 @@ object HttpClient {
     private val gson = Gson()
 
     class ApiException(override val message: String) : IOException()
-    class UnAuthorizedException : IOException()
+    class UnAuthorizedException(override val message: String) : IOException()
 
     suspend fun <T, A> postRequest(
         url: String,
@@ -44,12 +44,12 @@ object HttpClient {
             .build()
         val response = client.newCall(request).execute()
         if (response.code == 401) {
-            throw UnAuthorizedException()
+            throw UnAuthorizedException("Unauthorized \n ${response.code} ${response.body?.string()}")
         } else if (response.isSuccessful) {
             return@withContext gson.fromJson(response.body?.string(), typeOf)
                 ?: throw ApiException("Empty response ${response.code}")
         } else {
-            throw ApiException("Error ${response.code} ${response.body}")
+            throw ApiException("Error ${response.code} ${response.body?.string()}")
         }
     }
 }
