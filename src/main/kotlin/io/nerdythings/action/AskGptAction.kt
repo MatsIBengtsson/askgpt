@@ -43,8 +43,7 @@ class AskGptAction : AnAction() {
                 questionText.append("\nCode:\n$selectedText")
             }
             // OK button was pressed
-            ActionGptRequestHelper.makeGPTRequest(project, questionText.toString(), "Asking GPT...") {
-                val text = it.replace(".", ".\n")
+            ActionGptRequestHelper.makeGPTRequest(project, questionText.toString(), "Asking GPT...") { text ->
                 IdeaUtil.insertIntoSameFile(
                     project = project,
                     editor = editor,

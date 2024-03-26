@@ -8,8 +8,8 @@ import io.nerdythings.utils.IdeaUtil
 class NerdyActionGroup : DefaultActionGroup() {
     override fun update(event: AnActionEvent) {
         IdeaUtil.setActionIcon(event)
+        event.presentation.isEnabledAndVisible = true
     }
-
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
