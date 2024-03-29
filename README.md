@@ -1,8 +1,9 @@
 # ChatGPT Assistant for IntelliJ IDEA
 
-## The Video Description
+## Video Description
 [![Watch the video](/images/thumbnail.png)](https://youtu.be/4i7ql-CZRkw)
 
+## About
 ![Screenshot1](/images/animation.webp)
 
 ![Screenshot3](/images/image2.png)
