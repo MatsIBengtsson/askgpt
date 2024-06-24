@@ -8,8 +8,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
 
     var gptToken: String? = null
-    var gptModel: String = "gpt-4"
-    var gptAsk: String = "What is the purpose of humankind?"
+    var gptModel: String = "gpt-4o"
+    var gptAsk: String = "Please suggest refactoring if you think it is an improvement"
+    var additionalFiles: List<String> = emptyList()
     private var sendCodeWithGptAskType: Int = SendCodeMethod.DONT_SEND.ordinal
     var createTestQuestion: String = "Could you be so kind and create tests for this file? " +
             "Please, make sure that coverage is at least 80% and tests have success and failure scenario. " +
@@ -52,6 +53,7 @@ internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
         DONT_SEND,
         SEND_A_FILE,
         SEND_SELECTED_ONLY,
+        SEND_FILE_AND_OTHERS,
     }
 
     companion object {

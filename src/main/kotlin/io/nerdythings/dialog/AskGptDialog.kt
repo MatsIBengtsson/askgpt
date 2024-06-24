@@ -1,6 +1,7 @@
 package io.nerdythings.dialog
 
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
 import io.nerdythings.preferences.AppSettingsState
@@ -8,6 +9,7 @@ import java.awt.GridLayout
 import java.awt.event.ItemEvent
 import javax.swing.*
 import javax.swing.event.DocumentListener
+import java.io.File
 
 
 class AskGptDialog() : DialogWrapper(true) {
@@ -24,7 +26,7 @@ class AskGptDialog() : DialogWrapper(true) {
         val panel = JPanel().apply {
             setLayout(GridLayout(6, 20))
         }
-        val label = JLabel("Enter question to chatGPT")
+        val label = JLabel("Enter request to chatGPT")
         val settings = AppSettingsState.instance
         val textArea = JTextArea(5, 100)
         textArea.margin = JBUI.insets(10)
@@ -80,6 +82,11 @@ class AskGptDialog() : DialogWrapper(true) {
             settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY,
         )
 
+        val radioButton4 = JRadioButton(
+            "Send full code of current file and files to be selected in coming dialog",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_FILE_AND_OTHERS,
+        )
+
         radioButton1.addItemListener { e ->
             if (e.stateChange == ItemEvent.SELECTED) {
                 settings.setShouldSendCode(AppSettingsState.SendCodeMethod.DONT_SEND)
@@ -95,16 +102,39 @@ class AskGptDialog() : DialogWrapper(true) {
                 settings.setShouldSendCode(AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY)
             }
         }
+        radioButton4.addItemListener { e ->
+            if (e.stateChange == ItemEvent.SELECTED) {
+                settings.setShouldSendCode(AppSettingsState.SendCodeMethod.SEND_FILE_AND_OTHERS)
+                selectAdditionalFiles()
+            }
+        }
 
         val group = ButtonGroup()
 
         group.add(radioButton1)
         group.add(radioButton2)
         group.add(radioButton3)
+        group.add(radioButton4)
 
         panel.add(radioButton1)
         panel.add(radioButton2)
         panel.add(radioButton3)
+        panel.add(radioButton4)
     }
 
+    private fun selectAdditionalFiles() {
+        val project = ProjectManager.getInstance().openProjects.firstOrNull()
+        val projectBasePath = project?.basePath ?: System.getProperty("user.home")  // Fallback to home directory
+        val fileChooser = JFileChooser().apply {
+            isMultiSelectionEnabled = true
+            fileSelectionMode = JFileChooser.FILES_ONLY
+            currentDirectory = File(projectBasePath)
+        }
+        val option = fileChooser.showOpenDialog(contentPane)
+        if (option == JFileChooser.APPROVE_OPTION) {
+            val files = fileChooser.selectedFiles
+            val settings = AppSettingsState.instance
+            settings.additionalFiles = files.map { it.path }
+        }
+    }
 }

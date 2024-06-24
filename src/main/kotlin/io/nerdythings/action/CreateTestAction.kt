@@ -30,7 +30,7 @@ class CreateTestAction : AnAction() {
         ActionGptRequestHelper.makeGPTRequest(
             project, text, "GPT is creating tests for your code..."
         ) { response ->
-            val code = ActionGptRequestHelper.cutCodeFromResponse(response)
+            val code = ActionGptRequestHelper.cutCodeFromResponse(response ?: "No response from GPT when asked to create tests for your code")
             val dot = path.lastIndexOf('.')
             val newPath = path.substring(0, dot) + "Test" + path.substring(dot, path.length)
             IdeaUtil.writeAndOpenFile(project, newPath, code)

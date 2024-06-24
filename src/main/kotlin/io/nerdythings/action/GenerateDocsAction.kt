@@ -41,7 +41,8 @@ class GenerateDocsAction : AnAction() {
             AppSettingsState.instance.writeDocsQuestion + "\nCode:\n" + actionRequest.code,
             "GPT is documenting your code...",
         ) {
-            IdeaUtil.replaceFileContent(project, editor, it)
+            val nonNullResponse = it ?: "No response from GPT while requested to document your code"
+            IdeaUtil.replaceFileContent(project, editor, nonNullResponse)
         }
     }
 

@@ -40,8 +40,9 @@ class FindBugsAction : AnAction() {
             project,
             AppSettingsState.instance.checkBugsQuestion + "\nCode:\n" + actionRequest.code,
             "GPT is looking in your code..."
-        ) {
-            IdeaUtil.replaceFileContent(project, editor, it)
+        ) { response ->
+            val nonNullResponse = response ?: "No response from GPT when asked to look for bugs in your code"
+            IdeaUtil.replaceFileContent(project, editor, nonNullResponse)
         }
     }
 
