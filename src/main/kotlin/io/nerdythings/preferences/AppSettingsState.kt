@@ -9,7 +9,8 @@ internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
 
     var gptToken: String? = null
     var gptModel: String = "gpt-4o"
-    var gptAsk: String = "Please suggest refactoring if you think it is an improvement"
+    var gptAsk: String = "Please suggest refactoring of included files if you think it is an improvement. " +
+        "Possibly suggest moving functionality between files/classes or creating new files/classes."
     var additionalFiles: List<String> = emptyList()
     private var sendCodeWithGptAskType: Int = SendCodeMethod.DONT_SEND.ordinal
     var createTestQuestion: String = "Could you be so kind and create tests for this file? " +

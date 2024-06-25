@@ -66,7 +66,7 @@ object GptRepository {
         }
     }
 
-    suspend fun askGptWithFiles(
+    suspend fun askGptAddingFilesToRequest(
         body: String,
         files: List<File>,
         callback: (result: String?, error: String?) -> Unit
@@ -101,7 +101,7 @@ object GptRepository {
         }
     }
 
-    suspend fun uploadSingleFile(file: File, callback: (fileId: String?, error: String?) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun uploadSingleFile(file: File): String = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val fileContent = file.readBytes()
         val requestBody = MultipartBody.Builder()
@@ -116,20 +116,24 @@ object GptRepository {
             .post(requestBody)
             .build()
 
-        try {
-            client.newCall(request).execute().use { response ->
-                val responseBody = response.body?.string()
-                if (!response.isSuccessful)
-                    throw IOException("Unexpected code $response")
-                val fileId = parseFileId(responseBody)
-                runOnUiThread {
-                    callback.invoke(fileId, null)
+        suspendCancellableCoroutine { continuation ->
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
                 }
-            }
-        } catch (e: IOException) {
-            runOnUiThread {
-                callback.invoke(null, e.message)
-            }
+
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        if (!response.isSuccessful) {
+                            continuation.resumeWithException(IOException("Unexpected code $response"))
+                        } else {
+                            val responseBody = response.body?.string()
+                            val fileId = parseFileId(responseBody)
+                            continuation.resume(fileId ?: "")
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -143,13 +147,8 @@ object GptRepository {
     suspend fun uploadFiles(files: List<File>): List<String> {
         val fileIds = mutableListOf<String>()
         for (file in files) {
-            uploadSingleFile(file) { fileId, error ->
-                if (error == null && fileId != null) {
+            val fileId = uploadSingleFile(file)
                     fileIds.add(fileId)
-                } else {
-                    println("Error uploading file and getting fileID for it: $file, $error")
-                }
-            }
         }
         return fileIds
     }

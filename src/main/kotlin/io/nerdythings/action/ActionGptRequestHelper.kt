@@ -32,7 +32,7 @@ object ActionGptRequestHelper {
         result: (String?) -> Unit
     ) {
         runGptRequest(project, progressText, { callback ->
-            GptRepository.askGptWithFiles(question, files, callback)
+            GptRepository.askGptAddingFilesToRequest(question, files, callback)
         }, result)
     }
 
@@ -50,8 +50,8 @@ object ActionGptRequestHelper {
                         request { response, error ->
                             handleResponse(project, response, error, result)
                         }
+                    }
                 }
-            }
             }
         })
     }
@@ -76,14 +76,5 @@ object ActionGptRequestHelper {
         } else {
             Messages.showMessageDialog(project, error, "Error", Messages.getInformationIcon())
         }
-    }
-
-    fun cutCodeFromResponse(response: String): String {
-        val regex = "```.*?\\n(.*?)```".toRegex(RegexOption.DOT_MATCHES_ALL)
-        return regex.findAll(response)
-            .map { matchResult ->
-                matchResult.groups[1]?.value?.trim() ?: ""
-            }
-            .toList().joinToString("\n")
     }
 }
