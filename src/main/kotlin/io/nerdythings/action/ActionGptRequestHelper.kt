@@ -56,18 +56,12 @@ object ActionGptRequestHelper {
         })
     }
 
-    private fun handleResponse(
-        project: Project,
-        response: String?,
-        error: String?,
-        result: (String?) -> Unit
-    ) {
+    private fun handleResponse(project: Project, response: String?,
+        error: String?, result: (String?) -> Unit) {
         if (error == null) {
             if (response == null) {
                 Messages.showMessageDialog(
-                    project,
-                    "Empty response",
-                    "Error",
+                    project, "Empty response", "Error",
                     Messages.getInformationIcon()
                 )
             } else {

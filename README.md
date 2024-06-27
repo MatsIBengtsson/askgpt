@@ -16,8 +16,9 @@ No needs to copy code to the browser and back, just ask GPT from the IDE and see
 *  Go to the OpenAI site and create API key: <a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a>.
 * In IDE open a Tools menu and press <b>AskGpt Settings</b>. Paste the ChatGPT API key into the <b>GPT Token</b> field (the first one).
 
-To call the plugin just press *Control+Enter* shortcut in the code.
-A context-sensitive menu will appear, allowing you to select a task.
+To call the plugin you need to launch it from tools -> Generate..., which can be done also by pressing *Alt+Insert* shortcut in the code.
+A context-sensitive menu will appear, allowing you to define your task for GPT.
+
 The plugin then communicates with ChatGPT and provides you with actionable solutions or suggestions, right where you need them.
 
 ## Key Features

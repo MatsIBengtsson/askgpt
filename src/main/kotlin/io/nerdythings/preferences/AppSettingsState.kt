@@ -13,6 +13,14 @@ internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
         "Possibly suggest moving functionality between files/classes or creating new files/classes."
     var additionalFiles: List<String> = emptyList()
     private var sendCodeWithGptAskType: Int = SendCodeMethod.DONT_SEND.ordinal
+    var doRefactorPrompt: String = "Please refactor enclosed code. Restructure it where it improves nonfunctional " +
+            "attributes like readability, maintainability, extensibility, modularity and testability, " +
+            "as well as reduces complexity. Without changing " +
+            "its external behavior. If you are supplied with multiple files and classes, refactor in such a way that " +
+            "where it is an improvement, you suggest adding, moving and removing files, functions and classes. " +
+            "Especially target reducing duplicate code, large classes, long methods, high coupling between classes and " +
+            "lack of logical structure. Your answer should include the final look of all code, without left out " +
+            "parts or with 'examples' instead of finalized solutions."
     var createTestQuestion: String = "Could you be so kind and create tests for this file? " +
             "Please, make sure that coverage is at least 80% and tests have success and failure scenario. " +
             "Also, your answer should have only code .  " +
