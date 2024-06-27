@@ -2,7 +2,7 @@ import java.util.*
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.0.0-Beta4"
+    id("org.jetbrains.kotlin.jvm") version "1.9.24"
     id("org.jetbrains.intellij") version "1.17.2"
 }
 
@@ -23,13 +23,10 @@ intellij {
 //includeTransitiveDependencies = true
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
-    implementation("org.json:json:20210307")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
+    implementation("org.json:json:20230618")
 }
-
 
 tasks {
     // Set the JVM compatibility versions
@@ -62,10 +59,37 @@ tasks {
     if (propFile.exists()) {
         val p = Properties()
         p.load(propFile.reader())
+        val pycharmLocation = p.getProperty("PyCharmLocation")
+        val ideaLocation = p.getProperty("IdeaLocation")
+
+        if (pycharmLocation != null) {
+            register<org.jetbrains.intellij.tasks.RunIdeTask>("runPycharmIde") {
+                ideDir.set(file(pycharmLocation))
+            }
+        }
+
+        if (ideaLocation != null) {
+            register<org.jetbrains.intellij.tasks.RunIdeTask>("runIdeaIde") {
+                ideDir.set(file(ideaLocation))
+            }
+        }
         if (p.containsKey("AndroidStudioLocation")) {
             runIde {
                 ideDir.set(file(p.getProperty("AndroidStudioLocation")))
             }
         }
+    }
+
+    // Add configurations for running PyCharm and IDEA
+    register("runPycharm") {
+        dependsOn("runPycharmIde")
+        description = "Run the IDE with PyCharm"
+        group = "IDE"
+    }
+
+    register("runIdea") {
+        dependsOn("runIdeaIde")
+        description = "Run the IDE with IntelliJ IDEA"
+        group = "IDE"
     }
 }
