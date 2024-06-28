@@ -41,6 +41,9 @@ class SettingsDialog : DialogWrapper(true) {
             addLabeledTextField(this, "ChatGPT Default Question", AppSettingsState.instance.gptAsk, textRows = 1) {
                 AppSettingsState.instance.gptAsk = it
             }
+            addLabeledTextField(this, "ChatGpt Refactor Code Prompt", AppSettingsState.instance.doRefactorPrompt) {
+                AppSettingsState.instance.doRefactorPrompt = it
+            }
             addLabeledTextField(this, "ChatGpt Test Question", AppSettingsState.instance.createTestQuestion) {
                 AppSettingsState.instance.createTestQuestion = it
             }

@@ -56,6 +56,10 @@ The plugin then communicates with ChatGPT and provides you with actionable solut
                 text="Ask GPT Model" description="Create a custom inplace ask">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
+        <action id="io.nerdythings.action.RefactorCodeAction" class="io.nerdythings.action.RefactorCodeAction"
+                text="Refactor Code Using AI" description="Refactor Code as requested">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
         <action id="io.nerdythings.action.CreateTestAction" class="io.nerdythings.action.CreateTestAction"
                 text="Generate Test with AI" description="Generates tests for a whole class">
             <add-to-group group-id="GenerateGroup" anchor="last"/>

@@ -2,7 +2,8 @@ import java.util.*
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.24"
+    kotlin("jvm") version "1.9.24"
+    kotlin("plugin.serialization") version "1.9.24"
     id("org.jetbrains.intellij") version "1.17.2"
 }
 
@@ -17,14 +18,13 @@ repositories {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     version.set("2022.2.5")
-    type.set("IU")
+       type.set("IU") // Target IDE Platform
 }
 
 //includeTransitiveDependencies = true
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
     implementation("org.json:json:20230618")
 }
 
@@ -60,17 +60,21 @@ tasks {
         val p = Properties()
         p.load(propFile.reader())
         val pycharmLocation = p.getProperty("PyCharmLocation")
+        val pyCharmProjectDir = p.getProperty("PyCharmProjectDir")
         val ideaLocation = p.getProperty("IdeaLocation")
+        val ideaProjectDir = p.getProperty("IdeaProjectDir")
 
-        if (pycharmLocation != null) {
+        if (pycharmLocation != null && pyCharmProjectDir != null) {
             register<org.jetbrains.intellij.tasks.RunIdeTask>("runPycharmIde") {
                 ideDir.set(file(pycharmLocation))
+                args = listOf(file(pyCharmProjectDir).absolutePath)
             }
         }
 
-        if (ideaLocation != null) {
+        if (ideaLocation != null && ideaProjectDir != null) {
             register<org.jetbrains.intellij.tasks.RunIdeTask>("runIdeaIde") {
                 ideDir.set(file(ideaLocation))
+                args = listOf(file(ideaProjectDir).absolutePath)
             }
         }
         if (p.containsKey("AndroidStudioLocation")) {
