@@ -9,18 +9,15 @@ import javax.swing.*
 import javax.swing.event.DocumentListener
 import java.io.File
 
-class AskGptDialog : DialogWrapper(true) {
+class SelectReferredCodeDialog(private val prompt: String, title: String) : DialogWrapper(true) {
 
-    private val contentPane: JPanel by lazy {
-        JPanel()
-    }
-
+    private val contentPane: JPanel by lazy { JPanel() }
     private lateinit var radioButton4: JRadioButton
     private var additionalFiles: List<File> = listOf()
 
     init {
         init()
-        title = "Ask GPT"
+        this.title = title
     }
 
     override fun createCenterPanel(): JComponent {
@@ -29,22 +26,22 @@ class AskGptDialog : DialogWrapper(true) {
         val settings = AppSettingsState.instance
         val textArea = JTextArea(5, 100).apply {
             margin = JBUI.insets(10)
-            text = settings.gptAsk
+            text = prompt
             lineWrap = true
             wrapStyleWord = true
         }
 
         textArea.document.addDocumentListener(object : DocumentListener {
             override fun insertUpdate(e: javax.swing.event.DocumentEvent?) {
-                settings.gptAsk = textArea.text
+                // update the dynamic prompt
             }
 
             override fun removeUpdate(e: javax.swing.event.DocumentEvent?) {
-                settings.gptAsk = textArea.text
+                // update the dynamic prompt
             }
 
             override fun changedUpdate(e: javax.swing.event.DocumentEvent?) {
-                settings.gptAsk = textArea.text
+                // update the dynamic prompt
             }
         })
 
@@ -87,7 +84,7 @@ class AskGptDialog : DialogWrapper(true) {
 
         listOf(radioButton1, radioButton2, radioButton3, radioButton4).forEach { radioButton ->
             radioButton.addItemListener { e ->
-            if (e.stateChange == ItemEvent.SELECTED) {
+                if (e.stateChange == ItemEvent.SELECTED) {
                     settings.setShouldSendCode(
                         when (radioButton) {
                             radioButton1 -> AppSettingsState.SendCodeMethod.DONT_SEND
@@ -114,7 +111,7 @@ class AskGptDialog : DialogWrapper(true) {
         panel.add(radioButton4)
     }
 
-     override fun doOKAction() {
+    override fun doOKAction() {
         if (radioButton4.isSelected) {
             val selectFilesDialog = SelectFilesDialog()
             if (selectFilesDialog.showAndGet()) {

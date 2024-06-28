@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import io.nerdythings.api.GptRepository
-import io.nerdythings.dialog.AskGptDialog
+import io.nerdythings.dialog.SelectReferredCodeDialog
 import io.nerdythings.preferences.AppSettingsState
 import io.nerdythings.utils.GptResponseUtil.openResponseInNewEditor
 import io.nerdythings.utils.IdeaUtil
@@ -24,7 +24,8 @@ class RefactorCodeAction : AnAction() {
         val editor = event.getData(CommonDataKeys.EDITOR)
         if (!UserResponseUtil.validateInputUsable(project, editor))
             return
-        val dialog = AskGptDialog()
+        val settings = AppSettingsState.instance
+        val dialog = SelectReferredCodeDialog(settings.doRefactorPrompt, "Refactor Code")
         dialog.show()
         if (dialog.exitCode == DialogWrapper.OK_EXIT_CODE) {
             handleDialogOk(event, project!!, editor!!)
