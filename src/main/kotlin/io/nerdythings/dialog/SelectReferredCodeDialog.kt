@@ -6,10 +6,12 @@ import com.intellij.ui.components.JBScrollPane
 import io.nerdythings.preferences.AppSettingsState
 import java.awt.event.ItemEvent
 import javax.swing.*
+import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import java.io.File
 
-class SelectReferredCodeDialog(private val prompt: String, title: String) : DialogWrapper(true) {
+class SelectReferredCodeDialog(private var prompt: String, title: String, private var doUpdateSettingsPrompt: Boolean = false) :
+    DialogWrapper(true) {
 
     private val contentPane: JPanel by lazy { JPanel() }
     private lateinit var radioButton4: JRadioButton
@@ -23,7 +25,6 @@ class SelectReferredCodeDialog(private val prompt: String, title: String) : Dial
     override fun createCenterPanel(): JComponent {
         val panel = JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) }
         val label = JLabel("Enter request to chatGPT")
-        val settings = AppSettingsState.instance
         val textArea = JTextArea(5, 100).apply {
             margin = JBUI.insets(10)
             text = prompt
@@ -32,16 +33,16 @@ class SelectReferredCodeDialog(private val prompt: String, title: String) : Dial
         }
 
         textArea.document.addDocumentListener(object : DocumentListener {
-            override fun insertUpdate(e: javax.swing.event.DocumentEvent?) {
-                // update the dynamic prompt
+            override fun insertUpdate(e: DocumentEvent?) {
+                updatePrompt(textArea.text)
             }
 
-            override fun removeUpdate(e: javax.swing.event.DocumentEvent?) {
-                // update the dynamic prompt
+            override fun removeUpdate(e: DocumentEvent?) {
+                updatePrompt(textArea.text)
             }
 
-            override fun changedUpdate(e: javax.swing.event.DocumentEvent?) {
-                // update the dynamic prompt
+            override fun changedUpdate(e: DocumentEvent?) {
+                updatePrompt(textArea.text)
             }
         })
 
@@ -57,6 +58,10 @@ class SelectReferredCodeDialog(private val prompt: String, title: String) : Dial
 
         contentPane.add(panel)
         return contentPane
+    }
+
+    private fun updatePrompt(newPrompt: String) {
+        prompt = newPrompt
     }
 
     private fun addRadioGroup(panel: JPanel) {
@@ -122,6 +127,13 @@ class SelectReferredCodeDialog(private val prompt: String, title: String) : Dial
                 return
             }
         }
+        if (doUpdateSettingsPrompt) {
+            AppSettingsState.instance.gptAsk = prompt  // Save the updated prompt
+        }
         super.doOKAction()
+    }
+
+    fun getUpdatedPrompt(): String {
+        return prompt
     }
 }

@@ -18,23 +18,24 @@ object UserResponseUtil {
         return true
     }
 
-    internal suspend fun handleSendFile(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder, filesToSend: MutableList<File>) {
+    internal suspend fun handleSendFile(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
+                                        filesToSend: MutableList<File>, progressText: String) {
         FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend)
         FileUtil.appendFilesInListToQuestion(questionText, filesToSend)
-        GptRequestUtil.makeGPTRequest(project, questionText.toString(), "Asking GPT...")
+        GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)
     }
 
-    internal suspend fun handleSendFileAndOthers(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder, filesToSend: MutableList<File>, settings: AppSettingsState) {
+    internal suspend fun handleSendFileAndOthers(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
+                                                 filesToSend: MutableList<File>, settings: AppSettingsState, progressText: String) {
         FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend)
         filesToSend.addAll(settings.additionalFiles.map { File(it) })
         FileUtil.appendFilesInListToQuestion(questionText, filesToSend)
-        GptRequestUtil.makeGPTRequest(project, questionText.toString(), "Asking GPT...")
+        GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)
     }
 
-    suspend fun handleSendSelectedOnly(editor: Editor, project: Project, questionText: StringBuilder) {
+    suspend fun handleSendSelectedOnly(editor: Editor, project: Project, questionText: StringBuilder, progressText: String) {
         val selectedText = editor.selectionModel.selectedText ?: ""
         questionText.append("\nCode:\n$selectedText")
-        GptRequestUtil.makeGPTRequest(project, questionText.toString(), "Asking GPT...")
+        GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)
     }
-
 }

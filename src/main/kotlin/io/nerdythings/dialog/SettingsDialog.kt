@@ -10,10 +10,11 @@ import java.awt.event.MouseEvent
 import java.net.URI
 import javax.swing.*
 import javax.swing.event.DocumentListener
-
+import javax.swing.text.JTextComponent
 
 class SettingsDialog : DialogWrapper(true) {
     private var contentPane: JPanel? = null
+    private var finalUserQuestion: String? = null
 
     init {
         init()
@@ -21,7 +22,7 @@ class SettingsDialog : DialogWrapper(true) {
 
     override fun createCenterPanel(): JComponent? {
         contentPane = JPanel().apply {
-            setLayout(GridLayout(6, 1))
+            layout = GridLayout(6, 1)
             createTextLink(
                 this,
                 "ChatGPT token (click here to create)",
@@ -39,23 +40,50 @@ class SettingsDialog : DialogWrapper(true) {
                 AppSettingsState.instance.gptModel = it
             }
             addLabeledTextField(this, "ChatGPT Default Question", AppSettingsState.instance.gptAsk, textRows = 1) {
-                AppSettingsState.instance.gptAsk = it
+                finalUserQuestion = it
             }
             addLabeledTextField(this, "ChatGpt Refactor Code Prompt", AppSettingsState.instance.doRefactorPrompt) {
-                AppSettingsState.instance.doRefactorPrompt = it
+                finalUserQuestion = it
             }
             addLabeledTextField(this, "ChatGpt Test Question", AppSettingsState.instance.createTestQuestion) {
-                AppSettingsState.instance.createTestQuestion = it
+                finalUserQuestion = it
             }
             addLabeledTextField(this, "ChatGpt Bugs Question", AppSettingsState.instance.checkBugsQuestion) {
-                AppSettingsState.instance.checkBugsQuestion = it
+                finalUserQuestion = it
             }
             addLabeledTextField(this, "ChatGPT Docs Question", AppSettingsState.instance.writeDocsQuestion) {
-                AppSettingsState.instance.writeDocsQuestion = it
+                finalUserQuestion = it
             }
         }
 
         return contentPane
+    }
+
+    private fun addTextFieldListener(textField: JTextComponent, onChange: (String) -> Unit) {
+        textField.document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: javax.swing.event.DocumentEvent?) {
+                onChange.invoke(textField.text)
+            }
+
+            override fun removeUpdate(e: javax.swing.event.DocumentEvent?) {
+                onChange.invoke(textField.text)
+            }
+
+            override fun changedUpdate(e: javax.swing.event.DocumentEvent?) {
+                onChange.invoke(textField.text)
+            }
+        })
+    }
+
+    private fun createPanelWithComponents(vararg components: JComponent): JPanel {
+        return JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            components.forEach {
+                add(Box.createVerticalStrut(5))
+                add(it)
+            }
+            add(Box.createVerticalStrut(20))
+        }
     }
 
     private fun addLabeledTextField(
@@ -65,39 +93,17 @@ class SettingsDialog : DialogWrapper(true) {
         textRows: Int = 6,
         onChange: (String) -> Unit
     ) {
-        val panel = JPanel().apply {
-            setLayout(GridLayout(textRows + 1, 1))
-        }
         val label = JLabel(labelText)
-
-        val textArea = JTextArea(textRows, 100)
-        textArea.margin = JBUI.insets(10)
-        textArea.text = textFieldText
-        textArea.lineWrap = true
-        textArea.wrapStyleWord = true
-
+        val textArea = JTextArea(textRows, 100).apply {
+            margin = JBUI.insets(10)
+            text = textFieldText
+            lineWrap = true
+            wrapStyleWord = true
+        }
         val scrollPane = JBScrollPane(textArea)
+        addTextFieldListener(textArea, onChange)
 
-        textArea.document.addDocumentListener(object : DocumentListener {
-            override fun insertUpdate(e: javax.swing.event.DocumentEvent?) {
-                onChange.invoke(textArea.text)
-            }
-
-            override fun removeUpdate(e: javax.swing.event.DocumentEvent?) {
-                onChange.invoke(textArea.text)
-            }
-
-            override fun changedUpdate(e: javax.swing.event.DocumentEvent?) {
-                onChange.invoke(textArea.text)
-            }
-        })
-
-        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        panel.add(Box.createVerticalStrut(5))
-        panel.add(label)
-        panel.add(Box.createVerticalStrut(5))
-        panel.add(scrollPane)
-        panel.add(Box.createVerticalStrut(20))
+        val panel = createPanelWithComponents(label, scrollPane)
         parentPanel.add(panel)
     }
 
@@ -108,44 +114,32 @@ class SettingsDialog : DialogWrapper(true) {
         textFieldText: String,
         onChange: (String) -> Unit
     ) {
-        val panel = JPanel().apply {
-            setLayout(GridLayout(2, 1))
+        val textArea = JTextField(textFieldText, 100).apply {
+            margin = JBUI.insets(10)
+        }
+        addTextFieldListener(textArea, onChange)
+
+        val linkLabel = JLabel(labelText).apply {
+            foreground = Color.BLUE.darker()
+            cursor = Cursor(Cursor.HAND_CURSOR)
+            toolTipText = linkURL
+            text = "<html><a href=''>$labelText</a></html>"
+            addMouseListener(object : MouseAdapter() {
+                override fun mouseClicked(e: MouseEvent?) {
+                    try {
+                        Desktop.getDesktop().browse(URI(linkURL))
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
+                }
+            })
         }
 
-        val textArea = JTextField(textFieldText, 100)
-
-        textArea.document.addDocumentListener(object : DocumentListener {
-            override fun insertUpdate(e: javax.swing.event.DocumentEvent?) {
-                onChange.invoke(textArea.text)
-            }
-
-            override fun removeUpdate(e: javax.swing.event.DocumentEvent?) {
-                onChange.invoke(textArea.text)
-            }
-
-            override fun changedUpdate(e: javax.swing.event.DocumentEvent?) {
-                onChange.invoke(textArea.text)
-            }
-        })
-
-        textArea.margin = JBUI.insets(10)
-        val linkLabel = JLabel(labelText)
-        linkLabel.foreground = Color.BLUE.darker()
-        linkLabel.cursor = Cursor(Cursor.HAND_CURSOR)
-        linkLabel.toolTipText = linkURL
-        linkLabel.text = "<html><a href=''>" + linkLabel.text + "</a></html>"
-
-        linkLabel.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent?) {
-                try {
-                    Desktop.getDesktop().browse(URI(linkURL))
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
-            }
-        })
-        panel.add(linkLabel)
-        panel.add(textArea)
+        val panel = createPanelWithComponents(linkLabel, textArea)
         parentPanel.add(panel)
+    }
+
+    fun getUpdatedUserQuestion(): String? {
+        return finalUserQuestion
     }
 }

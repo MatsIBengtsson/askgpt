@@ -15,8 +15,7 @@ object FileUtil {
             Messages.showMessageDialog(
                 project,
                 "The currently selected tab is not connected to a file. Please use the 'selected text' option instead.",
-                "Warning",
-                Messages.getWarningIcon()
+                "Warning", Messages.getWarningIcon()
             )
             return
         }
