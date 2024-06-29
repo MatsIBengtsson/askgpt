@@ -30,7 +30,7 @@ abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle
         if (!UserResponseUtil.validateInputUsable(project, editor)) {
             return
         }
-
+        promptToAi = _promptToAi
         val dialog = SelectReferredCodeDialog(promptToAi, dialogTitle, doUpdateSettingsPrompt)
         dialog.show()
         if (dialog.exitCode == DialogWrapper.OK_EXIT_CODE) {

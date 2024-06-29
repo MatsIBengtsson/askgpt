@@ -10,8 +10,8 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import java.io.File
 
-class SelectReferredCodeDialog(private var prompt: String, title: String, private var doUpdateSettingsPrompt: Boolean = false) :
-    DialogWrapper(true) {
+class SelectReferredCodeDialog(private var prompt: String, private val dialogTitle: String,
+                               private var doUpdateSettingsPrompt: Boolean = false) : DialogWrapper(true) {
 
     private val contentPane: JPanel by lazy { JPanel() }
     private lateinit var radioButton4: JRadioButton
@@ -19,12 +19,12 @@ class SelectReferredCodeDialog(private var prompt: String, title: String, privat
 
     init {
         init()
-        this.title = title
+        this.title = dialogTitle
     }
 
     override fun createCenterPanel(): JComponent {
         val panel = JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) }
-        val label = JLabel("Enter request to chatGPT")
+        val label = JLabel("Enter $dialogTitle request to chatGPT")
         val textArea = JTextArea(5, 100).apply {
             margin = JBUI.insets(10)
             text = prompt
