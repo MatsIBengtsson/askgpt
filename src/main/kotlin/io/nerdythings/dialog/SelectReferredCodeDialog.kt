@@ -17,6 +17,7 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
         private val contentPane: JPanel by lazy { JPanel() }
         private lateinit var radioButton4: JRadioButton
         private var additionalFiles: List<File> = listOf()
+        private var finalPrompt: String = prompt
 
         init {
             init()
@@ -63,6 +64,7 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
 
     private fun updatePrompt(newPrompt: String) {
         prompt = newPrompt
+        finalPrompt = newPrompt
     }
 
     private fun addRadioGroup(panel: JPanel) {
@@ -135,6 +137,6 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
     }
 
     fun getUpdatedPrompt(): String {
-        return prompt
+        return finalPrompt
     }
 }

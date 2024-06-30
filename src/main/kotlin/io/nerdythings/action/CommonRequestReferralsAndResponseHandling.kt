@@ -11,7 +11,7 @@ import io.nerdythings.api.GptRepository
 import io.nerdythings.dialog.SelectReferredCodeDialog
 import io.nerdythings.preferences.AppSettingsState
 import io.nerdythings.utils.FileUtil
-import io.nerdythings.utils.GptResponseUtil.openResponseInNewEditor
+import io.nerdythings.utils.GptRequestUtil
 import io.nerdythings.utils.IdeaUtil
 import io.nerdythings.utils.UserResponseUtil
 import kotlinx.coroutines.runBlocking
@@ -20,10 +20,13 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
-abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle: String, private val _promptToAi: String,
+abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle: String,
     private var doUpdateSettingsPrompt: Boolean = false) : AnAction() {
+        private lateinit var promptToAi: String
 
-    private var promptToAi = _promptToAi
+        fun initialize(paramPromptToAi: String) {
+            this.promptToAi = paramPromptToAi
+        }
 
     override fun actionPerformed(@NotNull event: AnActionEvent) {
         val project = event.project
@@ -31,7 +34,6 @@ abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle
         if (!UserResponseUtil.validateInputUsable(project, editor)) {
             return
         }
-        promptToAi = _promptToAi
         val currentFile = FileUtil.determineLocalFile(event)
         val dialog = SelectReferredCodeDialog(promptToAi, dialogTitle, doUpdateSettingsPrompt, currentFile)
         dialog.show()
@@ -49,21 +51,17 @@ abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle
         val questionText = StringBuilder(promptToAi)
         val filesToSend = mutableListOf<File>()
         val sendCodeMethod = settings.shouldSendCode()
-        val progressTest = "$dialogTitle in progress..."
+        val progressText = "$dialogTitle in progress..."
 
         runBlocking {
             if (sendCodeMethod == AppSettingsState.SendCodeMethod.SEND_A_FILE) {
-                UserResponseUtil.handleSendFile(event, editor, project, questionText, filesToSend, progressTest)
+                UserResponseUtil.handleSendFile(event, editor, project, questionText, filesToSend, progressText)
             } else if (sendCodeMethod == AppSettingsState.SendCodeMethod.SEND_FILE_AND_OTHERS) {
-                UserResponseUtil.handleSendFileAndOthers(event, editor, project, questionText, filesToSend, settings, progressTest)
+                UserResponseUtil.handleSendFileAndOthers(event, editor, project, questionText, filesToSend, settings, progressText)
             } else if (sendCodeMethod == AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY) {
-                UserResponseUtil.handleSendSelectedOnly(editor, project, questionText, progressTest)
+                UserResponseUtil.handleSendSelectedOnly(editor, project, questionText, progressText)
             } else {
-                ActionGptRequestHelper.makeGPTRequest(project, questionText.toString(), progressTest) { text ->
-                    openResponseInNewEditor(
-                        project,text ?: "Nothing was returned from GPT after the $dialogTitle request was sent."
-                    )
-                }
+                GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)
             }
         }
     }
@@ -83,9 +81,7 @@ abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle
     private suspend fun uploadFilesAndAskGpt(project: Project, editor: Editor, questionText: String, filesToSend: List<File>) {
         val fileIds = GptRepository.uploadFiles(filesToSend)
         val referencedQuestion = "$questionText (uploaded FileIDs): ${fileIds.joinToString(", ")}"
-        ActionGptRequestHelper.makeGPTRequest(project, referencedQuestion,"Asking GPT...") { text ->
-            insertResponseIntoEditor(project, editor, text ?: "Nothing was returned from GPT after the request was sent.")
-        }
+        GptRequestUtil.makeGPTRequest(project, referencedQuestion,"Asking GPT...")
     }
 
     override fun update(e: AnActionEvent) {

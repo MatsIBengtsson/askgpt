@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
 
@@ -16,7 +17,6 @@ object GptResponseUtil {
         manager.openTextEditor(OpenFileDescriptor(project, file), true)
     }
 
-
     fun cutCodeFromResponse(response: String): String {
         val regex = "```.*?\\n(.*?)```".toRegex(RegexOption.DOT_MATCHES_ALL)
         return regex.findAll(response)
@@ -24,6 +24,23 @@ object GptResponseUtil {
                 matchResult.groups[1]?.value?.trim() ?: ""
             }
             .toList().joinToString("\n")
+    }
+
+    internal fun ensureErrorFreeResponseWithContent(project: Project, response: String?,
+                               error: String?, result: (String?) -> Unit): Boolean {
+        if (error != null) {
+            Messages.showMessageDialog(project, error, "Error", Messages.getInformationIcon())
+            return false
+        }
+        if (response == null) {
+            Messages.showMessageDialog(
+                project, "Empty response", "Error",
+                Messages.getInformationIcon()
+            )
+            return false
+        }
+        result.invoke(response)
+        return true
     }
 }
 

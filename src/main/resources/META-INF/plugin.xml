@@ -21,7 +21,10 @@
     the code window you stood when requesting the GPT answer, or the whole file currently open in the editor, or any number of files,
     selectable from the IDE using the file selection dialog.
 
-    THere is a number of predefined prompts. All prompts can be modified by you. The generic AskGPT prompt is always changed to become the last prompt you used
+    The ability to send multiple files is essential and affects the answers. For example, if you ask AskGPT to detect possible issues, it will suggest
+    different tests to add if it sees or do not see the tests existing in referred classes and functions.
+
+    There is a number of predefined prompts. All prompts can be modified by you. The generic AskGPT prompt is always changed to become the last prompt you used
     when using that menue selection. The other prompts can be altered, yet always reverts to the default next time you run them, so you do not have to reinvent them.
 </p>
 
