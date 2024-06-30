@@ -19,18 +19,22 @@ object UserResponseUtil {
     }
 
     internal suspend fun handleSendFile(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
-                                        filesToSend: MutableList<File>, progressText: String) {
-        FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend)
+                                        filesToSend: MutableList<File>, progressText: String): Boolean {
+        if (!FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend))
+            return false
         FileUtil.appendFilesInListToQuestion(questionText, filesToSend)
         GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)
+        return true
     }
 
     internal suspend fun handleSendFileAndOthers(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
-                                                 filesToSend: MutableList<File>, settings: AppSettingsState, progressText: String) {
-        FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend)
+                                                 filesToSend: MutableList<File>, settings: AppSettingsState, progressText: String): Boolean {
+        if (!FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend))
+            return false
         filesToSend.addAll(settings.additionalFiles.map { File(it) })
         FileUtil.appendFilesInListToQuestion(questionText, filesToSend)
         GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)
+        return true
     }
 
     suspend fun handleSendSelectedOnly(editor: Editor, project: Project, questionText: StringBuilder, progressText: String) {

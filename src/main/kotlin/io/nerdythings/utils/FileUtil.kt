@@ -13,20 +13,21 @@ import java.io.IOException
 object FileUtil {
 
     fun appendFilesAsContentAndAddFilesToList(event: AnActionEvent, editor: Editor, project: Project?, questionText: StringBuilder,
-                                              filesToSend: MutableList<File>) {
+                                              filesToSend: MutableList<File>): Boolean {
         if (!isCurrentTabSaved(editor)) {
             Messages.showMessageDialog(
                 project,
                 "The currently selected tab is not connected to a file. Please use the 'selected text' option instead.",
                 "Warning", Messages.getWarningIcon()
             )
-            return
+            return false
         }
         questionText.append("\nFiles with code:\n")
         val localFilePath = determineLocalFilePath(event)
         if (localFilePath != null) {
             filesToSend.add(File(localFilePath))
         }
+        return true
     }
 
     fun appendFilesInListToQuestion(questionText: StringBuilder, filesToSend: List<File>) {

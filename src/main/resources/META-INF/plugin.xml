@@ -38,18 +38,19 @@
     </ul>
 </p>
 <p>
-To call the plugin just press <strong>Control+Enter</strong> shortcut in the code.
-A context-sensitive menu will appear, allowing you to select a task.
-The plugin send the request and selected material to ChatGPT. The response is provided direct in your IDE, right where you need them.
+To call the plugin you need to launch it from tools -> Generate... This can also can be done by pressing *Alt+Insert* shortcut in the code.
+A context-sensitive menu will appear, allowing you to define your task for GPT in detail.
+
+The plugin will then send the request and selected material to ChatGPT. The response is provided direct in your IDE, right where you need them.
 </p>
 
 <h2>Key Features:</h2>
 <ul>
     <li><strong>Custom Asks:</strong> Query ChatGPT directly to generate custom code snippets, algorithms, or tackle programming challenges right within your IDE.</li>
     <li><strong>Refactor Code:</strong> Request refactoring suggestions, for a selection in the editor, a whole file, or multiple files at once.</li>
-    <li><strong>Write Tests:</strong> Automatically generate test cases for your code. Simply specify the target, and let ChatGPT Assistant create comprehensive tests to ensure reliability.</li>
-    <li><strong>Find Bugs:</strong> Describe your bug to ChatGPT Assistant, and it will help identify potential flaws in your code, suggest debugging steps, or offer direct solutions.</li>
-    <li><strong>Create Docs:</strong> Generate documentation effortlessly. ChatGPT Assistant can document your functions, classes, and modules, making your codebase easier to navigate and maintain.</li>
+    <li><strong>Write Tests:</strong> Automatically generate test cases for your code. Simply specify the target, and let ChatGPT create comprehensive tests to ensure reliability.</li>
+    <li><strong>Find Issues:</strong> Describe your code to ChatGPT, and it will help identify potential flaws in your code, suggest debugging steps, or offer direct solutions.</li>
+    <li><strong>Create Docs:</strong> Generate documentation effortlessly. ChatGPT can document your functions, classes, and modules, making your codebase easier to navigate and maintain.</li>
 </ul>
     ]]></description>
 
@@ -70,15 +71,15 @@ The plugin send the request and selected material to ChatGPT. The response is pr
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <action id="io.nerdythings.action.CreateTestAction" class="io.nerdythings.action.CreateTestAction"
-                text="Generate Test with AI" description="Generates tests for a whole class">
+                text="Generate Test with AI" description="Generates tests for enclosed code">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <action id="io.nerdythings.action.FindBugsAction" class="io.nerdythings.action.FindBugsAction"
-                text="Analyse Code with AI" description="Analyses class and gives suggestions">
+                text="Find Issues Using AI" description="Analyses possible issues for enclosed code, and gives suggestions">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <action id="io.nerdythings.action.GenerateDocsAction" class="io.nerdythings.action.GenerateDocsAction"
-                text="Generate Documentation with AI" description="Generates docs for the class">
+                text="Generate Documentation with AI" description="Generates docs for the enclosed code">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <!-- Define a new group that includes your actions -->
