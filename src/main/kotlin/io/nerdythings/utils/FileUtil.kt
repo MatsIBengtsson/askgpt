@@ -1,16 +1,19 @@
 package io.nerdythings.utils
 
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import io.nerdythings.action.ActionHelper
+import com.intellij.openapi.vfs.VirtualFile
 import java.io.File
+import java.io.IOException
 
 object FileUtil {
 
-    fun appendFilesAsContentAndAddFilesToList(event: AnActionEvent, editor: Editor, project: Project?, questionText: StringBuilder, filesToSend: MutableList<File>) {
+    fun appendFilesAsContentAndAddFilesToList(event: AnActionEvent, editor: Editor, project: Project?, questionText: StringBuilder,
+                                              filesToSend: MutableList<File>) {
         if (!isCurrentTabSaved(editor)) {
             Messages.showMessageDialog(
                 project,
@@ -20,8 +23,7 @@ object FileUtil {
             return
         }
         questionText.append("\nFiles with code:\n")
-        val parsedEvent = ActionHelper.parseEvent(event)
-        val localFilePath = parsedEvent.localFilePath
+        val localFilePath = determineLocalFilePath(event)
         if (localFilePath != null) {
             filesToSend.add(File(localFilePath))
         }
@@ -39,5 +41,42 @@ object FileUtil {
         val document = editor.document
         val virtualFile = FileDocumentManager.getInstance().getFile(document)
         return virtualFile != null && virtualFile.isInLocalFileSystem
+    }
+
+    fun determineLocalFilePath(event: AnActionEvent): String? {
+        val vFile = event.getData(CommonDataKeys.VIRTUAL_FILE)
+        return if (vFile != null && vFile.exists() && !vFile.isDirectory) {
+            vFile.path
+        } else {
+            null
+        }
+    }
+
+    fun determineLocalFile(event: AnActionEvent): File? {
+        val localFilePath = determineLocalFilePath(event)
+        return if (localFilePath != null) {
+            File(localFilePath)
+        } else {
+            null
+        }
+    }
+
+    fun getVirtualFileContent(event: AnActionEvent): String? {
+        val file = event.getData(CommonDataKeys.VIRTUAL_FILE)
+        if (file != null) {
+            val content = readFileContentForExistingVirtualFile(file)
+            return content
+        } else {
+            return null
+        }
+    }
+
+    fun readFileContentForExistingVirtualFile(file: VirtualFile): String? {
+        return try {
+            String(file.contentsToByteArray(), file.charset)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
     }
 }

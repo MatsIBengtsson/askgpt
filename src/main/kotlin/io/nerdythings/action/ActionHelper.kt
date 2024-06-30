@@ -7,8 +7,8 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
+import io.nerdythings.utils.FileUtil
 import org.jetbrains.annotations.NotNull
-import java.io.IOException
 
 object ActionHelper {
 
@@ -29,18 +29,12 @@ object ActionHelper {
             builder.language = element.language.toString()
         }
 
-        // Get the VirtualFile object for the selected file
-        val file = event.getData(CommonDataKeys.VIRTUAL_FILE)
-        // Check if the file is not null and is a regular file
-        if (file != null && file.exists() && !file.isDirectory) {
+        val localFilePath = FileUtil.determineLocalFilePath(event)
+        if (localFilePath != null) {
             // Get the contents of the file as a string
-            builder.localFilePath = file.path
-            try {
-                val content = String(file.contentsToByteArray(), file.charset)
-                builder.fileContent = content
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+            builder.localFilePath = localFilePath
+            val content = FileUtil.getVirtualFileContent(event)
+            builder.fileContent = content
         }
         return builder.build()
     }

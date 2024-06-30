@@ -17,23 +17,23 @@ internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
             "attributes like readability, maintainability, extensibility, modularity and testability, " +
             "as well as reduces complexity. Without changing " +
             "its external behavior. If you are supplied with multiple files and classes, refactor in such a way that " +
-            "where it is an improvement, you suggest adding, moving and removing files, functions and classes. " +
+            "where it is an improvement, you suggest adding, changing, moving and removing files, functions and classes. " +
             "Especially target reducing duplicate code, large classes, long methods, high coupling between classes and " +
             "lack of logical structure. Your answer should include the final look of all code, without left out " +
             "parts or with 'examples' instead of finalized solutions."
-    var createTestQuestion: String = "Could you be so kind and create tests for this file? " +
+    var createTestQuestion: String = "Please create tests for enclosed code. " +
             "Please, make sure that coverage is at least 80% and tests have success and failure scenario. " +
-            "Also, your answer should have only code .  " +
+            "Also, your answer should have only code.  " +
             "No intro our outro words and don't cut the code in the response. It should be fully written. " +
             " Thank you!"
 
-    var checkBugsQuestion: String = "Could you be so kind and check this file? " +
-            "Please, find all bugs, null pointers, memory leaks and improvements, that improve this code. " +
-            "Also, your answer should have only code and comments inside the code, above lines that it was meant for.  " +
-            "No intro our outro words and don't cut the code in the response. It should be fully written. " +
+    var checkBugsQuestion: String = "Please check enclosed code. " +
+            "Please, find all possibilities for bugs, null pointers, memory leaks and other issues that can be improved for enclosed code. " +
+            "Your answer should be only code and comments inside the code, above lines that it is targeting to improve.  " +
+            "No intro or outro words and don't cut the code in the response. It should be fully written. " +
             " Thank you!"
 
-    var writeDocsQuestion: String = "Could you be so kind and write documentation and comments for this file? " +
+    var writeDocsQuestion: String = "Please write documentation and comments for enclosed code. " +
             "Please, cover all methods and important or complicated logic, but do not change the code. " +
             "Do not cover obvious parts, like variables with proper names. " +
             "Also, your answer should have only code with documentation and comments. " +

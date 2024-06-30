@@ -10,6 +10,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import io.nerdythings.api.GptRepository
 import io.nerdythings.dialog.SelectReferredCodeDialog
 import io.nerdythings.preferences.AppSettingsState
+import io.nerdythings.utils.FileUtil
 import io.nerdythings.utils.GptResponseUtil.openResponseInNewEditor
 import io.nerdythings.utils.IdeaUtil
 import io.nerdythings.utils.UserResponseUtil
@@ -31,7 +32,8 @@ abstract class CommonRequestReferralsAndResponseHandling(private val dialogTitle
             return
         }
         promptToAi = _promptToAi
-        val dialog = SelectReferredCodeDialog(promptToAi, dialogTitle, doUpdateSettingsPrompt)
+        val currentFile = FileUtil.determineLocalFile(event)
+        val dialog = SelectReferredCodeDialog(promptToAi, dialogTitle, doUpdateSettingsPrompt, currentFile)
         dialog.show()
         if (dialog.exitCode == DialogWrapper.OK_EXIT_CODE) {
             handleDialogOk(event, project!!, editor!!, dialog)

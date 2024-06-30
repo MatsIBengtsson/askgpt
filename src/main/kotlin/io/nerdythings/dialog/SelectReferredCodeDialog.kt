@@ -11,16 +11,17 @@ import javax.swing.event.DocumentListener
 import java.io.File
 
 class SelectReferredCodeDialog(private var prompt: String, private val dialogTitle: String,
-                               private var doUpdateSettingsPrompt: Boolean = false) : DialogWrapper(true) {
+    private var doUpdateSettingsPrompt: Boolean = false, private val currentFile: File? = null
+    ) : DialogWrapper(true) {
 
-    private val contentPane: JPanel by lazy { JPanel() }
-    private lateinit var radioButton4: JRadioButton
-    private var additionalFiles: List<File> = listOf()
+        private val contentPane: JPanel by lazy { JPanel() }
+        private lateinit var radioButton4: JRadioButton
+        private var additionalFiles: List<File> = listOf()
 
-    init {
-        init()
-        this.title = dialogTitle
-    }
+        init {
+            init()
+            this.title = dialogTitle
+        }
 
     override fun createCenterPanel(): JComponent {
         val panel = JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) }
@@ -118,7 +119,7 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
 
     override fun doOKAction() {
         if (radioButton4.isSelected) {
-            val selectFilesDialog = SelectFilesDialog()
+            val selectFilesDialog = SelectFilesDialog(currentFile)
             if (selectFilesDialog.showAndGet()) {
                 additionalFiles = selectFilesDialog.getSelectedFiles()
                 AppSettingsState.instance.additionalFiles = additionalFiles.map { it.path }
