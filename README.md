@@ -1,4 +1,7 @@
-# ChatGPT Assistant for IntelliJ IDEA
+<!-- This file has been modified by Mats Bengtsson.
+Original file is part of the Nerdy Things AskGPT project.
+-->
+# ChatGPT helper for IntelliJ IDEA
 
 This plugin makes ChatGPT requests for you based on your files. It then pastes the answers into a separate tab in the editor.
 This simplifies the usage, staying in the IDE for all steps. For example, suggested code changes can be copied to the clipboard,

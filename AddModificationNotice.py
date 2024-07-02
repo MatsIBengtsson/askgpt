@@ -43,6 +43,8 @@ def extract_file_extension(str_current_file_path):
 
 
 def add_modification_notice(str_current_file_path, fil_added_notice_log):
+    if not os.path.exists(str_current_file_path):
+        return
     str_file_extension = extract_file_extension(str_current_file_path)
     str_adjusted_modification_notice = get_notice_template(str_file_extension)
     with open(str_current_file_path, 'r+', encoding='utf-8') as fil_needing_notice:
@@ -51,20 +53,46 @@ def add_modification_notice(str_current_file_path, fil_added_notice_log):
         if str_adjusted_modification_notice.strip() not in str_content:
             fil_needing_notice.seek(0, 0)
             if str_file_extension == '.xml':
-                lst_content_parts = str_content.split('?>', 1)
-                if len(lst_content_parts) > 1:
-                    if lst_content_parts[0].strip().startswith('<?xml'):
-                        str_content = (lst_content_parts[0] + '?>\n' + str_adjusted_modification_notice +
-                                       lst_content_parts[1])
-                    else:
-                        str_content = (str_adjusted_modification_notice + str_content)
-                else:
-                    str_content = str_adjusted_modification_notice + str_content
+                str_content = add_notice_to_xml(str_adjusted_modification_notice, str_content)
+            elif str_file_extension == '.html':
+                str_content = add_notice_to_html(str_adjusted_modification_notice, str_content)
             else:
                 str_content = str_adjusted_modification_notice + str_content
             fil_needing_notice.write(str_content)
             fil_needing_notice.truncate()
             fil_added_notice_log.write(f"{str_current_file_path}\n")
+
+
+def add_notice_to_html(str_adjusted_modification_notice, str_content):
+    lst_content_parts = str_content.split('>', 1)
+    if len(lst_content_parts) > 1:
+        if lst_content_parts[0].strip().lower().startswith('<!doctype html'):
+            str_part_two = lst_content_parts[1]
+            if str_part_two.startswith('\n'):
+                str_part_two = str_part_two[1:]
+            str_content = (lst_content_parts[0] + '>\n' + str_adjusted_modification_notice +
+                           str_part_two)
+        else:
+            str_content = (str_adjusted_modification_notice + str_content)
+    else:
+        str_content = str_adjusted_modification_notice + str_content
+    return str_content
+
+
+def add_notice_to_xml(str_adjusted_modification_notice, str_content):
+    lst_content_parts = str_content.split('?>', 1)
+    if len(lst_content_parts) > 1:
+        if lst_content_parts[0].strip().startswith('<?xml'):
+            str_part_two = lst_content_parts[1]
+            if str_part_two.startswith('\n'):
+                str_part_two = str_part_two[1:]
+            str_content = (lst_content_parts[0] + '?>\n' + str_adjusted_modification_notice +
+                           str_part_two)
+        else:
+            str_content = (str_adjusted_modification_notice + str_content)
+    else:
+        str_content = str_adjusted_modification_notice + str_content
+    return str_content
 
 
 def main():
@@ -77,7 +105,7 @@ def main():
             lst_str_files = fil_file_list.readlines()
         for str_file in lst_str_files:
             add_modification_notice(str_file.strip(), fil_added_notice_log)
-
+        a=1
 
 if __name__ == "__main__":
     main()

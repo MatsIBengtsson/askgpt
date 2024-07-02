@@ -1,3 +1,6 @@
+<!-- This file has been modified by Mats Bengtsson.
+Original file is part of the Nerdy Things AskGPT project.
+-->
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>io.nerdythings.askgpt</id>

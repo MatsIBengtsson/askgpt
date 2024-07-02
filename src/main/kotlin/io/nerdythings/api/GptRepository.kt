@@ -1,3 +1,6 @@
+/* This file has been modified by Mats Bengtsson.
+Original file is part of the Nerdy Things AskGPT project.
+*/
 package io.nerdythings.api
 
 import com.google.gson.reflect.TypeToken

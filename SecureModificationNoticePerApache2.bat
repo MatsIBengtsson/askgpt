@@ -14,15 +14,7 @@ git diff --name-only %FORK_POINT% HEAD > .\NoticeData\modified_files.txt
 REM Create a list of original files that have been modified
 if exist .\NoticeData\files_to_update.txt del .\NoticeData\files_to_update.txt
 
-echo Checking modified files against original files...
-for /f "tokens=*" %%i in (.\NoticeData\modified_files.txt) do (
-    findstr /x /c:"%%i" .\NoticeData\original_files.txt >nul
-    if %errorlevel% == 0 (
-        echo %%i >> .\NoticeData\files_to_update.txt
-    )
-)
-
-REM Call Python script to update the files
+python FindOriginalFilesNeedingNotice.py .\NoticeData\original_files.txt .\NoticeData\modified_files.txt
 python AddModificationNotice.py .\NoticeData\files_to_update.txt
 
 endlocal
