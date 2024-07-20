@@ -14,18 +14,22 @@ import java.net.URI
 import javax.swing.*
 import javax.swing.event.DocumentListener
 import javax.swing.text.JTextComponent
+import io.nerdythings.keybinding.KeyBindingConfigurator
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 
 class SettingsDialog : DialogWrapper(true) {
-    private var contentPane: JPanel? = null
+    private lateinit var contentPane: JPanel
     private var finalUserQuestion: String? = null
+    private lateinit var keyBindingField: JTextField
 
     init {
         init()
     }
 
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         contentPane = JPanel().apply {
-            layout = GridLayout(6, 1)
+            layout = GridLayout(7, 1)
             createTextLink(
                 this,
                 "ChatGPT token (click here to create)",
@@ -41,6 +45,16 @@ class SettingsDialog : DialogWrapper(true) {
                 AppSettingsState.instance.gptModel,
             ) {
                 AppSettingsState.instance.gptModel = it
+            }
+            addKeyBindingField(this, "AskGPT Menu Key Binding. Specify by pressing wanted key combination or leave value in field unchanged",
+                AppSettingsState.instance.askGptMenuKeyBinding ?: "") {
+                AppSettingsState.instance.askGptMenuKeyBinding = it.ifEmpty { null }
+                if (it.isEmpty()) {
+                    clearKeyBindingField()
+                }
+                if (!KeyBindingConfigurator.configureKeyBindings()) {
+                    clearKeyBindingField()
+                }
             }
             addLabeledTextField(this, "ChatGPT Default Question", AppSettingsState.instance.gptAsk, textRows = 1) {
                 finalUserQuestion = it
@@ -60,6 +74,65 @@ class SettingsDialog : DialogWrapper(true) {
         }
 
         return contentPane
+    }
+
+    private fun addKeyBindingField(
+        parentPanel: JPanel,
+        labelText: String,
+        initialBinding: String,
+        onChange: (String) -> Unit
+    ) {
+        val label = JLabel(labelText)
+        keyBindingField = JTextField(initialBinding).apply {
+            addKeyListener(object : KeyAdapter() {
+                private var keyCombination: String = initialBinding
+
+                override fun keyPressed(e: KeyEvent) {
+                    e.source as JTextField
+                    keyCombination = getKeyCombination(e)
+                    text = keyCombination
+                }
+
+                override fun keyReleased(e: KeyEvent) {
+                    onChange(text)
+                }
+            })
+        }
+        val panel = createPanelWithComponents(label, keyBindingField)
+        parentPanel.add(panel)
+    }
+
+    private fun getKeyCombination(e: KeyEvent): String {
+        val isKeyCode = e.keyChar == KeyEvent.CHAR_UNDEFINED
+        val modifiers = KeyEvent.getModifiersExText(e.modifiersEx)
+        val keyText = KeyEvent.getKeyText(e.keyCode)
+        return if (isKeyCode) {
+            composeKeyCombination(modifiers, keyText)
+        } else {
+            val keyCombination = composeKeyCombination(modifiers, keyText)
+            if (e.keyCode == KeyEvent.VK_ENTER && modifiers.isNotEmpty()) {
+                e.consume()  // Consume the ENTER key if it's part of a combination
+            }
+            keyCombination
+        }
+    }
+
+    private fun composeKeyCombination(modifiers: String, keyText: String): String {
+        return if (modifiers.isNotEmpty()) {
+            if (modifiers == keyText) {
+                    modifiers.lowercase()
+            } else {
+                    "${modifiers.lowercase()} ${keyText.uppercase()}"
+            }
+        } else {
+                keyText.uppercase()
+        }
+    }
+
+    private fun clearKeyBindingField() {
+        if (::keyBindingField.isInitialized) {
+            keyBindingField.text = ""
+        }
     }
 
     private fun addTextFieldListener(textField: JTextComponent, onChange: (String) -> Unit) {

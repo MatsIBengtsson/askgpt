@@ -1,0 +1,17 @@
+Apache [AskGPTMIBFork]
+===========================
+This product includes software developed at
+[Nerdy Things AskGPT] (//https://github.com/Nerdy-Things/askgpt).
+
+Modifications made by [Mats Bengtsson]:
+- Changed dependencies to avoid beta products
+- Added functionality to select nothing, parts of a file, a whole file, many files for all AskGPTMIBFork options
+    - The possibility to select a group of files is essential for refactoring and analyzing for untested issues to work well
+- Changed output to occur in new editor tabs, not adjusting the existing code directly
+    - Making it easy to utilize the IDE compare to clipboard functionality for comparing suggestions to existing code
+- Added refactoring as a prepared prompt
+- Changed prompting to be changeable, but reset to original defaults after each run for all options except generic AskGPT
+- Refactored class structure for better maintainability and added new sources to support the added functionality.
+- Tested functionality to work in PyCharm
+
+The above modifications are made to the original source code from [Nerdy Things AskGPT] plus new source codes.

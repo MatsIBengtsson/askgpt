@@ -3,14 +3,14 @@ Original file is part of the Nerdy Things AskGPT project.
 -->
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>io.nerdythings.askgpt</id>
+    <id>mats.bengtsson.askgptmibadd</id>
 
-    <name>Ask GPT</name>
+    <name>Ask GPT MIB Add</name>
 
-    <vendor email="nerdythingschannel@gmail.com" url="https://nerdythings.io">nerdythings.io</vendor>
+    <vendor email="mats.bengtsson@mibnet.se" url="https://mats.bengtsson@mibnet.se">Mats Bengtsson</vendor>
 
     <description><![CDATA[
-<h1>ChatGPT Assistant for IntelliJ IDEA</h1>
+<h1>ChatGPT Assistant for IntelliJ IDEA and Pycharm</h1>
 
 <p>
 <img src="https://github.com/Nerdy-Things/askgpt/blob/master/images/animation.webp?raw=true" />
@@ -68,47 +68,53 @@ The plugin will then send the request and selected material to ChatGPT. The resp
     </extensions>
 
     <actions>
-        <action id="io.nerdythings.action.AskGptAction" class="io.nerdythings.action.AskGptAction"
-                text="Ask GPT Model" description="Create a custom inplace ask">
-            <add-to-group group-id="GenerateGroup" anchor="last"/>
-        </action>
-        <action id="io.nerdythings.action.RefactorCodeAction" class="io.nerdythings.action.RefactorCodeAction"
-                text="Refactor Code Using AI" description="Refactor Code as requested">
-            <add-to-group group-id="GenerateGroup" anchor="last"/>
-        </action>
-        <action id="io.nerdythings.action.CreateTestAction" class="io.nerdythings.action.CreateTestAction"
-                text="Generate Test with AI" description="Generates tests for enclosed code">
-            <add-to-group group-id="GenerateGroup" anchor="last"/>
-        </action>
-        <action id="io.nerdythings.action.FindBugsAction" class="io.nerdythings.action.FindBugsAction"
-                text="Find Issues Using AI" description="Analyses possible issues for enclosed code, and gives suggestions">
-            <add-to-group group-id="GenerateGroup" anchor="last"/>
-        </action>
-        <action id="io.nerdythings.action.GenerateDocsAction" class="io.nerdythings.action.GenerateDocsAction"
-                text="Generate Documentation with AI" description="Generates docs for the enclosed code">
-            <add-to-group group-id="GenerateGroup" anchor="last"/>
-        </action>
         <!-- Define a new group that includes your actions -->
         <group
                 id="AskGPTToolMenu"
-                text="AskGPT"
-                description="AskGPT details"
-                popup="true"
-                class="io.nerdythings.action.NerdyActionGroup">
+                text="AskGPT MIB Add"
+                description="AskGPT MIB Add details"
+                popup="true">
             <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ToolsMenu"/>
 
             <action
-                    id="org.intellij.sdk.action.PopupDialogAction"
+                    id="io.nerdythings.action.PluginSettingsAction"
                     class="io.nerdythings.action.PluginSettingsAction"
                     text="AskGPT Settings"
                     description="Set required settings for the plugin.">
             </action>
-            <action
-                    id="org.intellij.sdk.action.OpenNerdyThingsAction"
-                    class="io.nerdythings.action.OpenNerdyThingsAction"
-                    text="About AskGPT"
-                    description="Set required settings for the plugin.">
+            <!-- Separator -->
+            <separator/>
+
+            <action id="io.nerdythings.action.AskGptAction" class="io.nerdythings.action.AskGptAction"
+                    text="Ask GPT Model" description="Create a custom inplace ask">
             </action>
+            <action id="io.nerdythings.action.RefactorCodeAction" class="io.nerdythings.action.RefactorCodeAction"
+                    text="Refactor Code Using AI" description="Refactor Code as requested">
+            </action>
+            <action id="io.nerdythings.action.CreateTestAction" class="io.nerdythings.action.CreateTestAction"
+                    text="Generate Test with AI" description="Generates tests for enclosed code">
+            </action>
+            <action id="io.nerdythings.action.FindBugsAction" class="io.nerdythings.action.FindBugsAction"
+                    text="Find Issues Using AI" description="Analyses possible issues for enclosed code, and gives suggestions">
+            </action>
+            <action id="io.nerdythings.action.GenerateDocsAction" class="io.nerdythings.action.GenerateDocsAction"
+                    text="Generate Documentation with AI" description="Generates docs for the enclosed code">
+            </action>
+            <!-- Separator -->
+            <action
+                    id="io.nerdythings.action.OpenNerdyThingsAction" class="io.nerdythings.action.OpenNerdyThingsAction"
+                    text="About AskGPT" description="Describe AskGPT History and purpose.">
+            </action>
+            <separator/>
         </group>
+        <action id="io.nerdythings.action.OpenAskGPMIBAddMenuAction" class="io.nerdythings.action.OpenAskGPTToolMenuAction"
+            text="Open AskGPT MIB Add Menu" description="Opens the AskGPT MIB Add Tool Menu">
+            <add-to-group group-id="EditorActions" anchor="last"/>
+        </action>
     </actions>
+
+<!--    <extensions defaultExtensionNs="com.intellij">-->
+<!--        <startupActivity-->
+<!--                implementation="io.nerdythings.startup.PluginStartup"/>-->
+<!--    </extensions>-->
 </idea-plugin>

@@ -11,7 +11,8 @@ object UserResponseUtil {
 
     fun validateInputUsable(project: Project?, editor: Editor?): Boolean {
         if (project == null || editor == null) {
-            Messages.showMessageDialog(project,"Can't get code. Please try another file.",
+            Messages.showMessageDialog(project,"You do not seem to be in an editor window. " +
+                    "Please place cursor in an editor tab and try again.",
                 "Error", Messages.getInformationIcon())
             return false
         }
