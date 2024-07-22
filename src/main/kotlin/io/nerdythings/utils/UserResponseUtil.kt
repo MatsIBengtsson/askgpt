@@ -19,7 +19,7 @@ object UserResponseUtil {
         return true
     }
 
-    internal suspend fun handleSendFile(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
+    internal fun handleSendFile(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
                                         filesToSend: MutableList<File>, progressText: String): Boolean {
         if (!FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend))
             return false
@@ -28,7 +28,7 @@ object UserResponseUtil {
         return true
     }
 
-    internal suspend fun handleSendFileAndOthers(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
+    internal fun handleSendFileAndOthers(event: AnActionEvent, editor: Editor, project: Project, questionText: StringBuilder,
                                                  filesToSend: MutableList<File>, settings: AppSettingsState, progressText: String): Boolean {
         if (!FileUtil.appendFilesAsContentAndAddFilesToList(event, editor, project, questionText, filesToSend))
             return false
@@ -38,7 +38,7 @@ object UserResponseUtil {
         return true
     }
 
-    suspend fun handleSendSelectedOnly(editor: Editor, project: Project, questionText: StringBuilder, progressText: String) {
+    fun handleSendSelectedOnly(editor: Editor, project: Project, questionText: StringBuilder, progressText: String) {
         val selectedText = editor.selectionModel.selectedText ?: ""
         questionText.append("\nCode:\n$selectedText")
         GptRequestUtil.makeGPTRequest(project, questionText.toString(), progressText)

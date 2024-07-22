@@ -21,8 +21,8 @@ import java.io.IOException
 object IdeaUtil {
 
     fun setActionIcon(event: AnActionEvent) {
-        val editor = event.getData(CommonDataKeys.EDITOR);
-        event.presentation.setEnabled(editor != null);
+        val editor = event.getData(CommonDataKeys.EDITOR)
+        event.presentation.setEnabled(editor != null)
         val icon = IconLoader.getIcon("/META-INF/pluginIcon16.png", NerdyActionGroup::class.java)
         event.presentation.setIcon(icon)
     }

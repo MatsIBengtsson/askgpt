@@ -1,7 +1,5 @@
 package io.nerdythings.model
 
-import io.nerdythings.model.ActionRequest
-
 data class ActionRequestBuilder(
     var projectName: String? = null,
     var presentationName: String? = null,

@@ -2,17 +2,16 @@ package io.nerdythings.action
 
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPopupMenu
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.Messages
 import io.nerdythings.utils.UserResponseUtil
 import java.awt.MouseInfo
 import java.awt.Point
 import java.awt.Rectangle
-import javax.swing.JComponent
 import javax.swing.SwingUtilities
-import java.awt.event.InputEvent
+
 
 class OpenAskGPTToolMenuAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -39,25 +38,31 @@ class OpenAskGPTToolMenuAction : AnAction() {
 
         // Determine cursor location to show popup menu
         val pointerLocation: Point = MouseInfo.getPointerInfo().location
-        val inputEvent = e.inputEvent
         val editorComponent = editor?.contentComponent
-
         if (editorComponent != null) {
             // Convert point from screen if we have a valid editor component
             SwingUtilities.convertPointFromScreen(pointerLocation, editorComponent)
-
-                // Properly positioning the popup menu near the cursor
             val visibleRect: Rectangle = editorComponent.visibleRect
-                val x = pointerLocation.x.coerceIn(0, visibleRect.width - popupMenu.component.preferredSize.width)
-                val y = pointerLocation.y.coerceIn(0, visibleRect.height - popupMenu.component.preferredSize.height)
-            popupMenu.component.show(editorComponent, x, y)
-            } else {
+            displayPopUp(popupMenu, pointerLocation, Pair(visibleRect.width, visibleRect.height), editorComponent)
+        } else {
             // Fallback case: Ensure popup does not arbitrarily float
-            // Obtain screen dimensions to prevent popup from going off-screen
             val screenSize = java.awt.Toolkit.getDefaultToolkit().screenSize
-            val x = pointerLocation.x.coerceIn(0, screenSize.width - popupMenu.component.preferredSize.width)
-            val y = pointerLocation.y.coerceIn(0, screenSize.height - popupMenu.component.preferredSize.height)
-            popupMenu.component.show(null, x, y)
+            displayPopUp(popupMenu, pointerLocation, Pair(screenSize.width, screenSize.height))
         }
+    }
+
+    private fun displayPopUp(popupMenu: ActionPopupMenu, pointerLocation: Point, wantedLocation: Pair<Int, Int>,
+                             invoker: javax.swing.JComponent?=null) {
+        val (width, height) = wantedLocation
+        val (x, y) = calculatePopupLocation(popupMenu, pointerLocation, Pair(width, height))
+        popupMenu.component.show(invoker, x, y)
+    }
+
+    private fun calculatePopupLocation(popupMenu: ActionPopupMenu, pointerLocation: Point,
+                                       wantedLocation: Pair<Int, Int>): Pair<Int, Int> {
+        val (width, height) = wantedLocation
+        val x = pointerLocation.x.coerceIn(0, width - popupMenu.component.preferredSize.width)
+        val y = pointerLocation.y.coerceIn(0, height - popupMenu.component.preferredSize.height)
+        return Pair(x, y)
     }
 }
