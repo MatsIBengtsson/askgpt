@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.Messages
 import io.nerdythings.utils.UserResponseUtil
 import java.awt.MouseInfo
 import java.awt.Point
-import java.awt.Rectangle
+import javax.swing.JComponent
 import javax.swing.SwingUtilities
 
 
@@ -37,22 +37,29 @@ class OpenAskGPTToolMenuAction : AnAction() {
         val popupMenu = actionManager.createActionPopupMenu("AskGPT", actionGroup)
 
         // Determine cursor location to show popup menu
-        val pointerLocation: Point = MouseInfo.getPointerInfo().location
+        val mousePointerLocation: Point = MouseInfo.getPointerInfo().location
         val editorComponent = editor?.contentComponent
+        var convertedPointerLocation: Point = Point(mousePointerLocation)
         if (editorComponent != null) {
             // Convert point from screen if we have a valid editor component
-            SwingUtilities.convertPointFromScreen(pointerLocation, editorComponent)
-            val visibleRect: Rectangle = editorComponent.visibleRect
-            displayPopUp(popupMenu, pointerLocation, Pair(visibleRect.width, visibleRect.height), editorComponent)
+            SwingUtilities.convertPointFromScreen(convertedPointerLocation, editorComponent)
+            displayMouseLocationPopUp(popupMenu, convertedPointerLocation, editorComponent)
+//            val visibleRect: Rectangle = editorComponent.visibleRect
+//            displayVisibleSizePopUp(popupMenu, convertedPointerLocation, Pair(visibleRect.width, visibleRect.height),
+//                editorComponent)
         } else {
             // Fallback case: Ensure popup does not arbitrarily float
-            val screenSize = java.awt.Toolkit.getDefaultToolkit().screenSize
-            displayPopUp(popupMenu, pointerLocation, Pair(screenSize.width, screenSize.height))
+//            val screenSize = java.awt.Toolkit.getDefaultToolkit().screenSize
+            displayMouseLocationPopUp(popupMenu, mousePointerLocation, null)
         }
     }
 
-    private fun displayPopUp(popupMenu: ActionPopupMenu, pointerLocation: Point, wantedLocation: Pair<Int, Int>,
-                             invoker: javax.swing.JComponent?=null) {
+    private fun displayMouseLocationPopUp(popupMenu: ActionPopupMenu, pointerLocation: Point, invoker: JComponent?) {
+        popupMenu.component.show(invoker, pointerLocation.x, pointerLocation.y)
+    }
+
+    private fun displayVisibleSizeAdjustedPopUp(popupMenu: ActionPopupMenu, pointerLocation: Point,
+                                                wantedLocation: Pair<Int, Int>, invoker: javax.swing.JComponent? = null) {
         val (width, height) = wantedLocation
         val (x, y) = calculatePopupLocation(popupMenu, pointerLocation, Pair(width, height))
         popupMenu.component.show(invoker, x, y)

@@ -21,9 +21,12 @@ possible issues, it will suggest different tests to add depending on what code i
 referred classes and functions. Similar with refactoring, troubleshooting, ...
 
 There is a number of predefined prompts. All prompt texts can be modified by you. The generic AskGPT prompt is
-updated to start from the last prompt you used whenever you used that menu selection. The other prompts can be altered,
-yet will always revert to the default next time you run them, so you do not have to reinvent them. The defaults can
-be changed by you, using the AskGPT Settings menu.
+updated to start from the last prompt you used whenever you used that menu selection. This is very helpful, 
+since the API ChatGPT has no memory of previous questions. You may then want to make resends where you have added
+some further comments or files, to ensure that the next response avoids routes you already know are wrong.
+
+The other prompts can be altered, yet will always revert to their default next time you run them. Thus you do not 
+have to reinvent their starting points. Their defaults can be changed by you, using the AskGPT Settings menu.
 
 ## How It Works
 
@@ -52,7 +55,7 @@ in a separate tab in the editor, making it easy to use and refine.
 * **Create Docs**: Generate documentation effortlessly. ChatGPT can document your functions, classes, and modules, making your codebase easier to navigate and maintain.
 
 ## Old Video Description
-[![Watch the video](/images/thumbnail.png)](https://youtu.be/4i7ql-CZRkw)
+[![Watch the video](/images/thumbnailadd.png)](https://youtu.be/4i7ql-CZRkw)
 
 ## About
 ![Screenshot1](/images/animation.webp)

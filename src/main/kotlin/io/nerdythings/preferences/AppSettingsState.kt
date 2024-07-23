@@ -13,10 +13,10 @@ internal class AppSettingsState : PersistentStateComponent<AppSettingsState> {
     var gptToken: String? = null
     var gptModel: String = "gpt-4o"
     var askGptMenuKeyBinding: String? = "Ctrl ENTER"
-    var gptPrePrompt: String = "You need to read the whole text and all enclosed code before defining what should be answered. " +
-            "You need to answer all questions asked. You need to consider all aspects of the problem stated. " +
-            "You need to consider all effects and side effects coming from your suggestion. " +
-            "You need to include either the solution to all, or comment what is left to do, currently left out of your answer.\n" +
+    var gptPrePrompt: String = "Read the whole text and all enclosed code before defining what should be answered. " +
+            "Answer all questions asked. Consider all aspects of the problem stated. " +
+            "Consider all effects and side effects coming from your suggestion. " +
+            "Include either the solution to all, or comment what is left to do, currently left out of your answer.\n" +
             "Please include possible suggestions on refactoring of included files or answers if you think it is an improvement. " +
             "Possibly suggest moving functionality between files/classes or creating new files/classes."
     var gptAsk: String = gptPrePrompt
