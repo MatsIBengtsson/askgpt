@@ -13,7 +13,6 @@ import java.awt.Rectangle
 import java.awt.Toolkit
 import javax.swing.JComponent
 import javax.swing.SwingUtilities
-import java.awt.Window
 
 
 class OpenAskGPTToolMenuAction : AnAction() {
@@ -48,36 +47,14 @@ class OpenAskGPTToolMenuAction : AnAction() {
             // Convert point from screen if we have a valid editor component
             SwingUtilities.convertPointFromScreen(convertedPointerLocation, editorComponent)
             val visibleRect: Rectangle = editorComponent.visibleRect
+            // Use a max test which works also for xml files
             val (maxPopupX, maxPopupY) = Pair(visibleRect.x + screenSize.width, visibleRect.y + screenSize.height)
-            val editorLocationOnScreen = editorComponent.locationOnScreen
-            val adjustedPointerLocation = Point(
-                mousePointerLocation.x - editorLocationOnScreen.x,
-                mousePointerLocation.y - editorLocationOnScreen.y)
-            val parentEditorWindow = SwingUtilities.getWindowAncestor(editorComponent)
-            val (parentEditorWindowLocation, parentAdjustedPointerLocation) = getParentWindowPoints(parentEditorWindow, mousePointerLocation)
-            val limitedPointerLocation = Point(
-                convertedPointerLocation.x.coerceIn(visibleRect.x, visibleRect.x + visibleRect.width - popupMenu.component.preferredSize.width),
-                convertedPointerLocation.y.coerceIn(visibleRect.y, visibleRect.y + visibleRect.height - popupMenu.component.preferredSize.height)
-            )
-            // displayMouseLocationPopUp(popupMenu, convertedPointerLocation, editorComponent)
             displayVisibleSizeAdjustedPopUp(popupMenu, convertedPointerLocation, Pair(maxPopupX, maxPopupY),
                 editorComponent)
         } else {
             // Fallback case: Ensure popup does not arbitrarily float
             displayVisibleSizeAdjustedPopUp(popupMenu, mousePointerLocation, Pair(screenSize.width, screenSize.height), null)
         }
-    }
-
-    private fun getParentWindowPoints(parentEditorWindow: Window, mousePointerLocation: Point): Pair<Point, Point> {
-        // Get the location of the editor window on screen
-        val parentEditorWindowLocation = parentEditorWindow.locationOnScreen
-
-        // Adjust the pointer location relative to the editor window
-        val parentAdjustedPointerLocation = Point(
-            mousePointerLocation.x - parentEditorWindowLocation.x,
-            mousePointerLocation.y - parentEditorWindowLocation.y
-        )
-        return Pair(parentEditorWindowLocation, parentAdjustedPointerLocation)
     }
 
     private fun displayMouseLocationPopUp(popupMenu: ActionPopupMenu, pointerLocation: Point, invoker: JComponent?) {
