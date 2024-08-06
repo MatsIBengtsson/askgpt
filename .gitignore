@@ -1,6 +1,9 @@
 # This file has been modified by Mats Bengtsson.
 # Original file is part of the Nerdy Things AskGPT project.
 #
+.env
+.env.*
+!.env.example
 .gradle
 build/
 !../gradle/wrapper/gradle-wrapper.jar
@@ -45,3 +48,8 @@ bin/
 .DS_Store
 /.idea/.name
 /NoticeData/
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

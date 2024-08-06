@@ -8,6 +8,7 @@ import java.awt.event.ItemEvent
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import java.awt.Dimension
 import java.io.File
 
 class SelectReferredCodeDialog(private var prompt: String, private val dialogTitle: String,
@@ -27,12 +28,7 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
     override fun createCenterPanel(): JComponent {
         val panel = JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) }
         val label = JLabel("Enter $dialogTitle request to chatGPT")
-        val textArea = JTextArea(5, 100).apply {
-            margin = JBUI.insets(10)
-            text = prompt
-            lineWrap = true
-            wrapStyleWord = true
-        }
+        val textArea = defineTextAreaBasedOnWindowSize()
 
         textArea.document.addDocumentListener(object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent?) {
@@ -56,10 +52,22 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
         panel.add(scrollPane)
         panel.add(Box.createVerticalStrut(10))
         addRadioGroup(panel)
-        panel.add(Box.createVerticalStrut(50))
+        panel.add(Box.createVerticalStrut(15))
 
         contentPane.add(panel)
         return contentPane
+    }
+
+    private fun defineTextAreaBasedOnWindowSize(): JTextArea{
+        val parentWindowSize: Dimension = this.window.size
+        val preferredRows = if (parentWindowSize.height > 800) 15 else 10
+        val preferredColumns = if (parentWindowSize.width > 1400) 120 else 100
+        return JTextArea(preferredRows, preferredColumns).apply {
+            margin = JBUI.insets(10)
+            text = prompt
+            lineWrap = true
+            wrapStyleWord = true
+        }
     }
 
     private fun updatePrompt(newPrompt: String) {
@@ -69,26 +77,14 @@ class SelectReferredCodeDialog(private var prompt: String, private val dialogTit
 
     private fun addRadioGroup(panel: JPanel) {
         val settings = AppSettingsState.instance
-
-        val radioButton1 = JRadioButton(
-            "Send just the question",
-            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.DONT_SEND,
-        )
-
-        val radioButton2 = JRadioButton(
-            "Send full code of the file",
-            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_A_FILE,
-        )
-
-        val radioButton3 = JRadioButton(
-            "Send selected text only (if selected)",
-            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY,
-        )
-
-        radioButton4 = JRadioButton(
-            "Send full code of current file and files to be selected in coming dialog",
-            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_FILE_AND_OTHERS,
-        )
+        val radioButton1 = JRadioButton("Send just the question",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.DONT_SEND,)
+        val radioButton2 = JRadioButton("Send full code of the file",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_A_FILE,)
+        val radioButton3 = JRadioButton("Send selected text only (if selected)",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_SELECTED_ONLY,)
+        radioButton4 = JRadioButton("Send full code of current file and files to be selected in coming dialog",
+            settings.shouldSendCode() == AppSettingsState.SendCodeMethod.SEND_FILE_AND_OTHERS,)
 
         listOf(radioButton1, radioButton2, radioButton3, radioButton4).forEach { radioButton ->
             radioButton.addItemListener { e ->

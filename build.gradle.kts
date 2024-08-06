@@ -54,9 +54,12 @@ tasks {
     }
 
     publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
+        token.set(System.getenv("JETBRAINS_MARKETPLACE_TOKEN"))
     }
 
+    buildPlugin {
+        archiveFileName.set("AskGptMibAdd-${project.version}.zip")
+    }
 
     val propFile = project.rootProject.file("local.properties")
     if (propFile.exists()) {

@@ -43,11 +43,14 @@ class SelectFilesDialog(initialFile: File? = null) : DialogWrapper(true) {
         }
 
         val selectedFilesTitle = JLabel("So Far Selected Files list:")
+        val separator = JSeparator(SwingConstants.HORIZONTAL)
 
         panel.add(selectFilesButton)
         panel.add(Box.createVerticalStrut(5))
         panel.add(clearFilesButton)
-        panel.add(Box.createVerticalStrut(20))
+        panel.add(Box.createVerticalStrut(10))
+        panel.add(separator)
+        panel.add(Box.createVerticalStrut(10))
         panel.add(selectedFilesTitle)
         panel.add(selectedFilesLabel)
 
