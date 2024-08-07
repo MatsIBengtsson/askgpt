@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.nerdythings.askgpt"
-version = "2.0"
+version = "2.0.1"
 
 repositories {
     mavenCentral()
@@ -50,7 +50,7 @@ tasks {
     signPlugin {
         certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
         privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        password.set(System.getenv("PLUGIN_PRIVATE_KEY_PASSPHRASE"))
     }
 
     publishPlugin {

@@ -52,4 +52,5 @@ bin/
 .env*
 .flaskenv*
 !.env.project
-!.env.vault
+/KeyFiles/*
+!/KeyFiles/
