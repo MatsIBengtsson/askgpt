@@ -17,3 +17,4 @@ if %ERRORLEVEL% NEQ 0 (
     echo Error loading environment variables from .env.vault
     exit /b 1
 )
+.\gradlew buildPlugin

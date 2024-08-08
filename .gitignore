@@ -54,3 +54,5 @@ bin/
 !.env.project
 /KeyFiles/*
 !/KeyFiles/
+
+!.env.vault

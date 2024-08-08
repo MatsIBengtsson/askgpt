@@ -2,7 +2,6 @@ package io.nerdythings.keybinding
 
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.KeyboardShortcut
-import com.intellij.openapi.actionSystem.impl.ActionConfigurationCustomizer
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.keymap.Keymap
@@ -11,8 +10,7 @@ import io.nerdythings.preferences.AppSettingsState
 import java.awt.event.KeyEvent
 import javax.swing.KeyStroke
 
-
-class KeyBindingConfigurator : ActionConfigurationCustomizer {
+class KeyBindingConfigurator {
 
     companion object {
         private const val ASK_GPT_MENU_ACTION_ID = "io.nerdythings.action.OpenAskGPMIBAddMenuAction"
@@ -131,7 +129,7 @@ class KeyBindingConfigurator : ActionConfigurationCustomizer {
         }
     }
 
-    override fun customize(actionManager: ActionManager) {
+    fun customizeKeys() {
         configureKeyBindings()
     }
 }
